@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNDER THE STARLIT SKY · Gallery Card 3 — "Twilight" -->
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="195" viewBox="0 0 260 195" preserveAspectRatio="xMidYMid slice">
+
+    <defs>
+        <linearGradient id="c3Sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#0c1f33"/>
+            <stop offset="40%"  stop-color="#1a3552"/>
+            <stop offset="75%"  stop-color="#3a5070"/>
+            <stop offset="100%" stop-color="#a87838"/>
+        </linearGradient>
+        <radialGradient id="c3Glow" cx="50%" cy="78%" r="45%">
+            <stop offset="0%"   stop-color="#ffd680" stop-opacity="0.55"/>
+            <stop offset="60%"  stop-color="#d4a058" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#a87838" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <rect width="260" height="195" fill="url(#c3Sky)"/>
+
+    <!-- A few early stars -->
+    <g fill="#f0e8d0">
+        <circle cx="18" cy="14" r="1.2" opacity="0.85"/>
+        <circle cx="58" cy="24" r="0.9" opacity="0.70"/>
+        <circle cx="110" cy="10" r="1.3" opacity="0.90"/>
+        <circle cx="166" cy="26" r="0.8" opacity="0.65"/>
+        <circle cx="222" cy="14" r="1.1" opacity="0.80"/>
+        <circle cx="38" cy="46" r="0.7" opacity="0.55"/>
+        <circle cx="200" cy="46" r="0.8" opacity="0.60"/>
+    </g>
+
+    <!-- Distant mountain ridge — silhouetted against twilight glow -->
+    <path d="M 0 125 L 30 108 L 70 118 L 110 100 L 160 115 L 200 102 L 240 116 L 260 110 L 260 145 L 0 145 Z"
+          fill="#0c1f33" opacity="0.95"/>
+
+    <!-- Golden horizon glow -->
+    <ellipse cx="130" cy="148" rx="160" ry="22" fill="url(#c3Glow)"/>
+
+    <!-- Mid hills -->
+    <path d="M 0 152 Q 60 145, 130 152 T 260 150 L 260 195 L 0 195 Z"
+          fill="#1a2535" opacity="0.92"/>
+
+    <!-- Tall grass blowing -->
+    <g stroke="#d4a058" stroke-width="1.2" fill="none" opacity="0.75" stroke-linecap="round">
+        <path d="M 12 192 Q 14 175, 16 168"/>
+        <path d="M 28 192 Q 30 172, 33 162"/>
+        <path d="M 52 192 Q 54 178, 58 168"/>
+        <path d="M 76 193 Q 78 176, 80 166"/>
+        <path d="M 102 192 Q 100 175, 96 164"/>
+        <path d="M 132 192 Q 134 174, 138 162"/>
+        <path d="M 162 193 Q 164 176, 168 164"/>
+        <path d="M 192 192 Q 190 178, 188 166"/>
+        <path d="M 220 192 Q 222 176, 226 164"/>
+        <path d="M 248 193 Q 246 178, 244 168"/>
+    </g>
+
+    <!-- Tiny wind sparks rising -->
+    <g fill="#ffd680">
+        <circle cx="60" cy="158" r="1.2" opacity="0.85"/>
+        <circle cx="120" cy="148" r="1.0" opacity="0.75"/>
+        <circle cx="180" cy="156" r="1.3" opacity="0.85"/>
+        <circle cx="220" cy="140" r="0.9" opacity="0.65"/>
+    </g>
+</svg>

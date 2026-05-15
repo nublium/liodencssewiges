@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Under The Starlit Sky — Preview · Ewiges</title>
+
+    <!-- LOCAL CSS — for preview only.
+         In production this is loaded from GitHub via the URL in the HTML file. -->
+    <link rel="stylesheet" type="text/css" href="ewiges-den.css" />
+
+    <style>
+        /* Preview-only helpers (not part of the production CSS).
+           These mock up Lioden's outer layout so we can see how the
+           den description box fits inside the real site. */
+        .preview-frame {
+            min-height: 100vh;
+        }
+        .preview-topbar {
+            background: #0c1f33;
+            border-bottom: 1px solid rgba(168, 120, 56, 0.40);
+            padding: 8px 24px;
+            color: #d4a058;
+            font-family: "Cinzel", serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        .preview-navbar {
+            background: linear-gradient(180deg, #142d44 0%, #0f2438 100%);
+            border-bottom: 1px solid rgba(168, 120, 56, 0.40);
+            padding: 12px 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .preview-navbar a {
+            color: #f0e8d0;
+            font-family: "Cinzel", serif;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.2s ease, text-shadow 0.2s ease;
+        }
+        .preview-navbar a:hover {
+            color: #e8c068;
+            text-shadow: 0 0 8px rgba(232, 192, 104, 0.55);
+        }
+        .preview-cols {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 16px;
+            padding: 16px;
+            background: #142d44;
+        }
+        .preview-main-col {
+            background: #1a3552;
+            min-height: 800px;
+            padding: 24px;
+        }
+        .preview-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        /* Mock king-table for the King Animation [11] section.
+           Lioden uses table#about with tr.right > td. */
+        .preview-king-table {
+            margin: 32px auto 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .preview-king-table td {
+            padding: 18px 24px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .preview-king-img {
+            width: 220px;
+            height: 220px;
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        /* Big "PREVIEW" label so we don't ship this to Lioden by mistake */
+        .preview-stamp {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(232, 192, 104, 0.18);
+            border: 1px solid rgba(232, 192, 104, 0.55);
+            color: #f0e3b8;
+            font-family: "Cinzel", serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            z-index: 100;
+            pointer-events: none;
+        }
+        /* Demo caves row */
+        .preview-caves-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            padding: 16px 0;
+            background: rgba(20, 40, 60, 0.55);
+            border-top: 1px solid rgba(168, 120, 56, 0.40);
+            border-bottom: 1px solid rgba(168, 120, 56, 0.40);
+            margin-top: 24px;
+        }
+        .preview-caves-row .col-md-3 {
+            text-align: center;
+            padding: 6px;
+        }
+        .preview-caves-row .col-md-3 a img {
+            width: 100%;
+            max-width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .preview-caves-row .col-md-3 a {
+            display: block;
+            margin-top: 6px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="preview-stamp">★ PREVIEW ONLY ★</div>
+
+<!-- ═══════════════ Mock Lioden top bar ═══════════════ -->
+<div class="container topbar preview-topbar">
+    <div class="welcomeback">Welcome back, <a href="#">Ewiges</a></div>
+</div>
+
+<!-- ═══════════════ Mock Lioden navbar ═══════════════ -->
+<nav class="navbar preview-navbar">
+    <a href="#">Den</a>
+    <a href="#">Crossroads</a>
+    <a href="#">Hoard</a>
+    <a href="#">Oasis</a>
+    <a href="#">Chatter</a>
+    <a href="#">News</a>
+    <a href="#">Event</a>
+    <a href="#">FAQ</a>
+</nav>
+
+<!-- ═══════════════ Main two-column grid ═══════════════ -->
+<div class="container main">
+<div class="preview-cols">
+
+    <!-- LEFT COLUMN: the content (.col-md-9 in real Lioden) -->
+    <div class="col-md-9 preview-main-col">
+
+
+        <!-- ════════ THE ACTUAL DEN HTML BLOCK STARTS HERE ════════
+             Everything between the markers below is the content
+             that will be pasted into the Lioden territory field. -->
+        <!-- ━━━━━━━━━━━━━━━━━ START DEN HTML ━━━━━━━━━━━━━━━━━ -->
+
+        <div class="eg-territory">
+
+            <div class="eg-title">Under the Starlit Sky&hellip;</div>
+            <div class="eg-subtitle">&hellip;freedom rode the open wind.</div>
+            <div class="eg-tagline">Devoted Soul &middot; Scattered &middot; Unbound</div>
+
+            <!-- BOX 1 — wide lore -->
+            <div class="eg-box lore">
+                <div class="eg-box-title">Pride's Lore</div>
+
+                <p class="eg-leadp">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                    laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+
+                <p>
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.
+                </p>
+
+                <blockquote class="eg-pullquote">
+                    Freedom rode the open wind &mdash; and we rode with her,
+                    devoted, scattered, unbound.
+                </blockquote>
+
+                <p>
+                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                    accusantium doloremque laudantium, totam rem aperiam, eaque
+                    ipsa quae ab illo inventore veritatis et quasi architecto
+                    beatae vitae dicta sunt explicabo.
+                </p>
+
+                <hr class="eg-divider">
+
+                <p>
+                    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
+                    odit aut fugit, sed quia consequuntur magni dolores eos qui
+                    ratione voluptatem sequi nesciunt.
+                </p>
+            </div>
+
+            <!-- BOTTOM ROW — small left + medium right -->
+            <div class="eg-row">
+
+                <!-- BOX 2 — Player Info (small left) -->
+                <div class="eg-box player">
+                    <div class="eg-box-title">Player's Info</div>
+
+                    <div class="eg-avatar">
+                        <img src="placeholder-avatar.svg" alt="Player avatar" />
+                    </div>
+
+                    <div class="eg-stat-row">
+                        <span class="eg-stat-label">Call Me</span>
+                        <span class="eg-stat-value">Ewiges</span>
+                    </div>
+                    <div class="eg-stat-row">
+                        <span class="eg-stat-label">Pronouns</span>
+                        <span class="eg-stat-value">They / Them</span>
+                    </div>
+                    <div class="eg-stat-row">
+                        <span class="eg-stat-label">Timezone</span>
+                        <span class="eg-stat-value">CEST</span>
+                    </div>
+                    <div class="eg-stat-row">
+                        <span class="eg-stat-label">Status</span>
+                        <span class="eg-stat-value">Open</span>
+                    </div>
+
+                    <hr class="eg-divider">
+
+                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Play Style</div>
+                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                        Casual breeder &middot; collects rare bases &middot;
+                        slow-paced &middot; chat first, trade second.
+                    </p>
+
+                    <hr class="eg-divider">
+
+                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Breeding Ethics</div>
+                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                        Cubs are part of the pride &mdash; sent to good homes,
+                        never traded harshly.
+                    </p>
+
+                    <hr class="eg-divider">
+
+                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Links</div>
+                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                        <a href="#">Wishlist</a> &middot;
+                        <a href="#">Toyhouse</a> &middot;
+                        <a href="#">Forum</a>
+                    </p>
+                </div>
+
+                <!-- BOX 3 — Gallery (medium right) -->
+                <div class="eg-box gallery">
+                    <div class="eg-box-title">Gallery</div>
+
+                    <div class="eg-gal-grid">
+                        <div class="eg-gal-card">
+                            <img src="placeholder-card-1.svg" alt="Gallery 1" />
+                            <span class="eg-gal-caption">Mngwa</span>
+                        </div>
+                        <div class="eg-gal-card">
+                            <img src="placeholder-card-2.svg" alt="Gallery 2" />
+                            <span class="eg-gal-caption">Wanderer</span>
+                        </div>
+                        <div class="eg-gal-card">
+                            <img src="placeholder-card-3.svg" alt="Gallery 3" />
+                            <span class="eg-gal-caption">Twilight</span>
+                        </div>
+                        <div class="eg-gal-card">
+                            <img src="placeholder-card-4.svg" alt="Gallery 4" />
+                            <span class="eg-gal-caption">The Open Wind</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /.eg-row -->
+
+            <!-- Credit -->
+            <div style="text-align:center; margin-top:32px; font-family:'Cinzel', serif;
+                        font-size:9px; letter-spacing:3px; color: rgba(212, 160, 88, 0.45);
+                        text-transform: uppercase;">
+                &middot; den by <a href="#" style="color: rgba(232, 192, 104, 0.70); text-decoration: none;">nub #166079</a> &middot;
+            </div>
+
+        </div><!-- /.eg-territory -->
+
+        <!-- ━━━━━━━━━━━━━━━━━ END DEN HTML ━━━━━━━━━━━━━━━━━ -->
+
+
+        <!-- Mock king-image table — to preview the [11] animation.
+             In real Lioden this is the king's portrait table. -->
+        <table id="about" class="preview-king-table">
+            <tbody>
+                <tr class="right">
+                    <td>
+                        <img class="preview-king-img"
+                             src="placeholder-king.svg"
+                             alt="King preview" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Mock caves row to preview the [7] cave styling -->
+        <div class="preview-caves-row">
+            <div class="col-md-3">
+                <a href="#"><img src="placeholder-pride.svg" alt="Pride" /></a><br>
+                <a href="#">Pride Overview</a>
+            </div>
+            <div class="col-md-3">
+                <a href="#"><img src="placeholder-cave.svg" alt="Cave" /></a><br>
+                <a href="#">Cubs Cave</a>
+            </div>
+            <div class="col-md-3">
+                <a href="#"><img src="placeholder-mound.svg" alt="Mound" /></a><br>
+                <a href="#">Beetle Mound</a>
+            </div>
+            <div class="col-md-3">
+                <a href="#"><img src="placeholder-nesting.svg" alt="Nesting" /></a><br>
+                <a href="#">Nesting Grounds</a>
+            </div>
+            <div class="col-md-3">
+                <a href="#"><img src="placeholder-unsorted.svg" alt="Unsorted" /></a><br>
+                <a href="#">Unsorted Lions</a>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT COLUMN: sidebar (.col-md-3 in real Lioden) -->
+    <div class="col-md-3 preview-sidebar">
+        <div class="panel panel-default">
+            <div class="panel-heading">Ewiges</div>
+            <div class="panel-body">
+                <p style="margin:0; font-size:12px;">Energy: 100%</p>
+                <p style="margin:0; font-size:12px;">Hunger: 92%</p>
+                <p style="margin:0; font-size:12px;">EXP: 27%</p>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Achievements</div>
+            <div class="panel-body">
+                <p style="margin:0; font-size:12px;">Progress (18%)</p>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Bookmarks</div>
+            <div class="panel-body">
+                <p style="margin:0; font-size:12px;">&raquo; <a href="#">Den</a></p>
+                <p style="margin:0; font-size:12px;">&raquo; <a href="#">Exploring</a></p>
+                <p style="margin:0; font-size:12px;">&raquo; <a href="#">Hunting</a></p>
+                <p style="margin:0; font-size:12px;">&raquo; <a href="#">Territory Map</a></p>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Chat Box</div>
+            <div class="panel-body s-chat-sidebar">
+                <div class="s-chat-msg">
+                    <a href="#">Player1</a>: A clear, starry night out there&hellip;
+                </div>
+                <div class="s-chat-msg">
+                    <a href="#">Player2</a>: Tell me about it. The wind feels alive.
+                </div>
+                <div class="s-chat-msg">
+                    <a href="#">Player3</a>: Anyone want to trade beetles?
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /.preview-cols -->
+</div><!-- /.container.main -->
+
+</body>
+</html>

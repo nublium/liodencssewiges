@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UNDER THE STARLIT SKY · unsorted-lions banner — scattered silhouettes on a ridge -->
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="170" viewBox="0 0 260 170" preserveAspectRatio="xMidYMid slice">
+
+    <defs>
+        <linearGradient id="unSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#0a1b30"/>
+            <stop offset="60%"  stop-color="#142d44"/>
+            <stop offset="100%" stop-color="#1f3a55"/>
+        </linearGradient>
+        <linearGradient id="unFrame" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#a87838"/>
+            <stop offset="60%" stop-color="#d4a058"/>
+            <stop offset="100%" stop-color="#e8c068"/>
+        </linearGradient>
+    </defs>
+
+    <rect width="260" height="170" fill="url(#unSky)"/>
+
+    <rect x="2" y="2" width="256" height="166" fill="none"
+          stroke="url(#unFrame)" stroke-width="1.5" opacity="0.70"/>
+
+    <!-- Stars -->
+    <g fill="#f0e8d0">
+        <circle cx="20"  cy="18" r="1.2" opacity="0.90"/>
+        <circle cx="58"  cy="30" r="0.9" opacity="0.78"/>
+        <circle cx="100" cy="14" r="1.4" opacity="0.95"/>
+        <circle cx="140" cy="28" r="0.9" opacity="0.80"/>
+        <circle cx="180" cy="16" r="1.3" opacity="0.92"/>
+        <circle cx="220" cy="30" r="0.9" opacity="0.78"/>
+        <circle cx="240" cy="18" r="1.0" opacity="0.85"/>
+        <circle cx="36"  cy="50" r="0.7" opacity="0.65"/>
+        <circle cx="208" cy="50" r="0.8" opacity="0.72"/>
+    </g>
+
+    <!-- Distant ridge -->
+    <path d="M 0 95 L 30 80 L 70 92 L 130 75 L 190 90 L 230 82 L 260 88 L 260 115 L 0 115 Z"
+          fill="#0c1f33" opacity="0.92"/>
+
+    <!-- Mid ridge -->
+    <path d="M 0 118 Q 60 110, 130 118 Q 200 110, 260 118 L 260 145 L 0 145 Z"
+          fill="#1a2535" opacity="0.85"/>
+
+    <!-- Scattered lions — small silhouettes at different distances -->
+    <g fill="#0a1525" opacity="0.90">
+        <!-- distant smaller ones -->
+        <ellipse cx="40"  cy="100" rx="6" ry="3"/>
+        <circle  cx="34"  cy="98"  r="2"/>
+
+        <ellipse cx="100" cy="92" rx="6" ry="3"/>
+        <circle  cx="94"  cy="90" r="2"/>
+
+        <ellipse cx="160" cy="98" rx="6" ry="3"/>
+        <circle  cx="154" cy="96" r="2"/>
+
+        <ellipse cx="220" cy="94" rx="6" ry="3"/>
+        <circle  cx="214" cy="92" r="2"/>
+
+        <!-- closer larger ones -->
+        <ellipse cx="70"  cy="135" rx="10" ry="5"/>
+        <circle  cx="61"  cy="132" r="4"/>
+
+        <ellipse cx="130" cy="140" rx="11" ry="6"/>
+        <circle  cx="120" cy="136" r="4.5"/>
+
+        <ellipse cx="200" cy="135" rx="10" ry="5"/>
+        <circle  cx="191" cy="132" r="4"/>
+    </g>
+
+    <!-- Foreground -->
+    <rect x="0" y="148" width="260" height="22" fill="#8c6428" opacity="0.50"/>
+
+    <g stroke="#d4a058" stroke-width="0.9" fill="none" opacity="0.65" stroke-linecap="round">
+        <line x1="14"  y1="166" x2="16" y2="152"/>
+        <line x1="50"  y1="166" x2="48" y2="152"/>
+        <line x1="100" y1="166" x2="102" y2="152"/>
+        <line x1="160" y1="166" x2="158" y2="152"/>
+        <line x1="210" y1="166" x2="212" y2="152"/>
+        <line x1="244" y1="166" x2="246" y2="152"/>
+    </g>
+</svg>
