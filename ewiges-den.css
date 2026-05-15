@@ -63,12 +63,23 @@
     50%      { opacity: 1;    transform: scale(1.15); }
 }
 
-/* A SECOND star layer that drifts diagonally across the sky.
-   Combined with eg-twinkle on the same element you get stars
-   that both twinkle AND slowly drift — much more atmospheric. */
+/* Star drift — moves each star LAYER at a different rate so they
+   look like parallax. Each comma in `background-position` matches
+   one star layer in body::before. */
 @keyframes eg-star-drift {
-    0%   { background-position: 0% 0%,   0% 0%,   0% 0%,   0% 0%; }
-    100% { background-position: 4% 6%,   -3% 4%,  2% -3%,  -2% -2%; }
+    0%   {
+        background-position:
+            0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+    }
+    100% {
+        background-position:
+            6% 8%,        /* big anchor stars drift the most */
+            4% 6%,
+            -3% 4%,
+            2% -3%,
+            -2% -2%,
+            3% -4%;       /* micro stars drift the least, opposite */
+    }
 }
 
 /* Faint nebulae drifting LEFT to RIGHT very slowly — adds depth */
@@ -183,18 +194,14 @@ body {
    We attach this to body::before as a pseudo-layer so the actual
    `background` property remains clean and editable.
 
-   The stars are drawn as 4 SEPARATE background-image layers, each
-   covering the whole viewport. By giving each layer a different
-   background-size (e.g. 800px) and tiling it, we get a sea of stars.
-   The eg-star-drift animation moves each layer at a slightly
-   different rate → stars in different "depths" feel like they
-   parallax-drift across the sky.
+   SIX layers of stars, ranging from BIG bright "named" stars
+   (3-4px, sparse) down to micro pinpricks (0.8px, dense). Each
+   layer drifts at a slightly different rate via background-size
+   variation → parallax-style depth.
 
-   On top of that the whole element pulses via eg-twinkle so the
-   stars also breathe. Two animations layered = much more alive.
-
-   To THIN OUT the stars, raise the background-size values below.
-   To ADD MORE, lower them (each tile gets denser). */
+   To make the sky DENSER: lower the background-size values.
+   To make it SPARSER: raise them.
+   To make stars BRIGHTER: raise the opacity values in the rgba(). */
 body::before {
     content: "" !important;
     position: fixed !important;
@@ -202,26 +209,36 @@ body::before {
     pointer-events: none !important;
     z-index: 0 !important;
     background-image:
-        /* Layer 1 — bright "near" stars, sparse */
-        radial-gradient(1.6px 1.6px at 30px 50px,   rgba(255, 250, 220, 0.95), transparent 60%),
-        /* Layer 2 — medium stars, denser */
-        radial-gradient(1.1px 1.1px at 110px 90px,  rgba(220, 232, 255, 0.85), transparent 60%),
-        /* Layer 3 — small "far" stars, densest */
-        radial-gradient(0.9px 0.9px at 60px 200px,  rgba(255, 245, 210, 0.78), transparent 60%),
-        /* Layer 4 — micro pinpricks, almost noise */
-        radial-gradient(0.7px 0.7px at 170px 30px,  rgba(200, 220, 250, 0.70), transparent 60%);
+        /* Layer 1 — BIG BRIGHT "anchor" stars (rare, very visible) */
+        radial-gradient(3.5px 3.5px at 80px 60px,
+            rgba(255, 250, 220, 1) 30%, rgba(255, 240, 190, 0.50) 50%, transparent 80%),
+        /* Layer 2 — BRIGHT large stars */
+        radial-gradient(2.5px 2.5px at 220px 180px,
+            rgba(255, 245, 210, 0.98), transparent 60%),
+        /* Layer 3 — medium-bright stars */
+        radial-gradient(2px 2px at 30px 50px,
+            rgba(255, 248, 220, 0.95), transparent 60%),
+        /* Layer 4 — medium stars, cool-tinted */
+        radial-gradient(1.6px 1.6px at 110px 90px,
+            rgba(220, 232, 255, 0.92), transparent 60%),
+        /* Layer 5 — small stars */
+        radial-gradient(1.2px 1.2px at 60px 200px,
+            rgba(255, 245, 210, 0.85), transparent 60%),
+        /* Layer 6 — micro pinpricks */
+        radial-gradient(0.9px 0.9px at 170px 30px,
+            rgba(200, 220, 250, 0.80), transparent 60%);
     background-size:
-        320px 320px,    /* near (sparse, big tile) */
-        260px 260px,    /* medium */
-        180px 180px,    /* far  */
-        140px 140px;    /* micro */
-    background-repeat: repeat, repeat, repeat, repeat !important;
-    /* Combined animation: drift slowly AND pulse the whole field.
-       Each layer drifts at a slightly different rate because the
-       keyframes give each background-position a different target. */
+        520px 520px,    /* BIG anchor stars — sparse but commanding */
+        380px 380px,    /* large */
+        260px 260px,    /* medium-bright */
+        200px 200px,    /* medium */
+        160px 160px,    /* small */
+        120px 120px;    /* micro */
+    background-repeat: repeat, repeat, repeat, repeat, repeat, repeat !important;
+    /* Combined animation — drift slowly AND pulse the whole field */
     animation:
-        eg-star-drift 120s linear infinite,
-        eg-twinkle    6s   ease-in-out infinite !important;
+        eg-star-drift 100s linear infinite,
+        eg-twinkle    4s   ease-in-out infinite !important;
 }
 
 /* ===== Nebula-like glow layer on top of the stars.
@@ -1087,48 +1104,70 @@ button.s-chat-message_menu {
 }
 
 /* ── CREDIT footer ──
-   A small line at the very bottom of the den, crediting the
-   designer. Lift it from "barely visible" to "subtle but clear". */
+   Small line at the very bottom of the den, crediting the designer.
+   Built as a BLOCK with star-flanked inline content so it survives
+   Lioden's HTML pipeline even if flex gets stripped. */
 .eg-credit {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 12px !important;
+    display: block !important;
     text-align: center !important;
-    margin: 36px auto 0 auto !important;
-    padding: 16px 0 !important;
-    max-width: 480px !important;
+    margin: 40px auto 0 auto !important;
+    padding: 18px 24px !important;
+    max-width: 520px !important;
     font-family: "Cinzel", serif !important;
-    font-size: 10px !important;
-    letter-spacing: 2.5px !important;
+    font-size: 11px !important;
+    letter-spacing: 3px !important;
     text-transform: uppercase !important;
-    color: rgba(232, 192, 104, 0.85) !important;
-    text-shadow: 0 0 8px rgba(232, 192, 104, 0.45), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
-    border-top: 1px solid rgba(168, 120, 56, 0.40) !important;
-    border-bottom: 1px solid rgba(168, 120, 56, 0.40) !important;
+    color: #f0e3b8 !important;
+    text-shadow:
+        0 0 10px rgba(232, 192, 104, 0.55),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
+    border-top: 1px solid rgba(232, 192, 104, 0.55) !important;
+    border-bottom: 1px solid rgba(232, 192, 104, 0.55) !important;
+    background: linear-gradient(180deg,
+        rgba(168, 120, 56, 0.05) 0%,
+        rgba(168, 120, 56, 0.18) 50%,
+        rgba(168, 120, 56, 0.05) 100%) !important;
     position: relative !important;
     z-index: 1 !important;
+    line-height: 1.6 !important;
 }
-.eg-credit::before,
+/* Star ornaments — sit BEFORE and AFTER the text inline */
+.eg-credit::before {
+    content: "✦" !important;
+    display: inline-block !important;
+    margin-right: 14px !important;
+    color: #e8c068 !important;
+    font-size: 13px !important;
+    vertical-align: middle !important;
+    text-shadow: 0 0 12px rgba(232, 192, 104, 0.85) !important;
+    animation: eg-mane-glow 4s ease-in-out infinite !important;
+}
 .eg-credit::after {
-    content: "✧" !important;
-    color: rgba(212, 160, 88, 0.85) !important;
-    font-size: 11px !important;
-    flex-shrink: 0 !important;
+    content: "✦" !important;
+    display: inline-block !important;
+    margin-left: 14px !important;
+    color: #e8c068 !important;
+    font-size: 13px !important;
+    vertical-align: middle !important;
+    text-shadow: 0 0 12px rgba(232, 192, 104, 0.85) !important;
+    animation: eg-mane-glow 4s ease-in-out infinite 2s !important;
 }
 .eg-credit a {
-    color: #f0e3b8 !important;
+    color: #fff5d0 !important;
     text-decoration: none !important;
-    font-weight: 600 !important;
-    letter-spacing: 2.5px !important;
-    border-bottom: 1px dashed rgba(232, 192, 104, 0.55) !important;
-    padding-bottom: 1px !important;
-    transition: color 0.2s ease, text-shadow 0.2s ease !important;
+    font-weight: 700 !important;
+    letter-spacing: 3px !important;
+    padding: 1px 4px !important;
+    border-bottom: 1px solid rgba(232, 192, 104, 0.65) !important;
+    transition: all 0.25s ease !important;
 }
 .eg-credit a:hover {
     color: #fff5d0 !important;
-    text-shadow: 0 0 10px rgba(255, 215, 130, 0.85) !important;
+    text-shadow:
+        0 0 14px rgba(255, 215, 130, 0.95),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
     border-bottom-color: #ffd680 !important;
+    background: rgba(232, 192, 104, 0.15) !important;
 }
 
 /* ─── SHARED BOX BASE ─────────────────────────────────────────
@@ -1332,6 +1371,70 @@ button.s-chat-message_menu {
     text-align: left !important;
 }
 
+/* ── LINKS as DECORATED PILLS in a horizontal row ──
+   Wrap your links like this:
+       <div class="eg-links">
+           <a href="…" class="eg-link-pill">Wishlist</a>
+           <a href="…" class="eg-link-pill">Toyhouse</a>
+           <a href="…" class="eg-link-pill">Forum</a>
+       </div>
+   Adds a gold-bordered chip for each link, side-by-side. */
+.eg-links {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    margin: 4px 0 0 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+.eg-link-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 5px 12px !important;
+    background: linear-gradient(180deg,
+        rgba(168, 120, 56, 0.25) 0%,
+        rgba(120, 84, 40, 0.30) 100%) !important;
+    border: 1px solid rgba(232, 192, 104, 0.55) !important;
+    border-radius: 999px !important;
+    color: #f0e3b8 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 10px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    text-shadow: 0 0 6px rgba(232, 192, 104, 0.55) !important;
+    transition: all 0.3s ease !important;
+    /* Override the .eg-box a dashed underline */
+    border-bottom: 1px solid rgba(232, 192, 104, 0.55) !important;
+}
+/* Tiny star ornament before each pill */
+.eg-link-pill::before {
+    content: "✧" !important;
+    color: rgba(232, 192, 104, 0.85) !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+}
+.eg-link-pill:hover {
+    background: linear-gradient(180deg,
+        rgba(232, 192, 104, 0.55) 0%,
+        rgba(168, 120, 56, 0.55) 100%) !important;
+    color: #fff5d0 !important;
+    border-color: #ffd680 !important;
+    border-bottom-color: #ffd680 !important;
+    box-shadow: 0 0 14px rgba(232, 192, 104, 0.55) !important;
+    transform: translateY(-2px) !important;
+    text-shadow:
+        0 0 10px rgba(255, 215, 130, 0.95),
+        0 1px 2px rgba(0, 0, 0, 0.65) !important;
+}
+.eg-link-pill:hover::before {
+    color: #fff5d0 !important;
+}
+
 /* Box 3 — medium gallery on the RIGHT (about 65% wide) */
 .eg-box.gallery {
     flex: 0 1 65% !important;
@@ -1343,43 +1446,72 @@ button.s-chat-message_menu {
    their lore: pull-quote, divider, drop-cap, closing paragraph,
    tag pills …
 
-   ▶ LIODEN SPACING FIX ▶ Lioden's content editor likes to insert
-   <br> tags between elements automatically. Those <br>s create
-   GIANT vertical gaps that the customer never asked for. The
-   block below collapses any <br> inside an .eg-box so the
-   spacing actually matches what the preview shows.
+   ▶▶▶ LIODEN SPACING FIX ▶▶▶
+   Lioden's territory description editor inserts `<br>` tags
+   for every Enter key the customer presses, even between block
+   elements. Multiple <br>s in a row create the 80-100px vertical
+   gaps that were ruining the lore box.
 
-   If you DO want a line-break, use a <p> tag (new paragraph) or
-   <hr class="eg-divider"> (gold divider). */
-.eg-box br {
-    display: block !important;
-    content: "" !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    line-height: 0 !important;
-    height: 0 !important;
-    font-size: 0 !important;
+   The rules below NUKE every <br> inside an .eg-box AND collapse
+   any empty/whitespace-only paragraphs that Lioden might add.
+   If you DO want a line-break, use a new <p>…</p> tag.
+   ───────────────────────────────────────────────────────────── */
+
+/* Hide all <br>s anywhere inside the territory — they only create
+   empty space, never useful breaks. Customers add paragraphs
+   via <p>. We catch brs at THREE levels:
+     · directly under .eg-territory (between boxes)
+     · inside any .eg-box (in lore, player, gallery)
+     · inside any element inside .eg-territory (defensive) */
+.eg-territory br,
+.eg-box br,
+.eg-territory * br,
+.eg-territory .eg-box br {
+    display: none !important;
 }
 
-/* All paragraphs inside a box — tight margins, justified text. */
-.eg-box p {
+/* Also nuke empty paragraphs at the .eg-territory level —
+   Lioden's HTML pipeline sometimes wraps block elements in <p>
+   tags which then become empty when the parser auto-closes them. */
+.eg-territory > p:empty,
+.eg-territory p:empty,
+.eg-territory > p:has(br:only-child) {
+    display: none !important;
+    margin: 0 !important;
+    height: 0 !important;
+}
+
+/* Highest-specificity paragraph rule — beats Lioden's defaults. */
+.eg-territory .eg-box p,
+.eg-territory .eg-box.lore p,
+.eg-territory .eg-box.player p,
+.eg-territory .eg-box.gallery p {
     margin: 0 0 14px 0 !important;
     padding: 0 !important;
     text-align: justify !important;
     hyphens: auto !important;
     position: relative !important;
-    z-index: 1 !important;          /* sit above the ::after corner ornaments */
+    z-index: 1 !important;
     line-height: 1.7 !important;
+    /* Some browsers use logical margins — kill those too */
+    margin-block-start: 0 !important;
+    margin-block-end: 14px !important;
+    -webkit-margin-before: 0 !important;
+    -webkit-margin-after: 14px !important;
 }
-.eg-box p:last-child { margin-bottom: 0 !important; }
-.eg-box p:first-child { margin-top: 0 !important; }
+.eg-territory .eg-box p:last-child { margin-bottom: 0 !important; }
+.eg-territory .eg-box p:first-of-type { margin-top: 0 !important; }
 
-/* When Lioden wraps things in its own <p> tags, those auto-wrapped
-   paragraphs sometimes appear empty — nuke them so they don't
-   create extra blank lines. */
-.eg-box p:empty,
-.eg-box p:has(br:only-child) {
+/* Collapse blank paragraphs that Lioden's editor inserts.
+   We catch THREE common shapes:
+     · <p></p>                   →  :empty
+     · <p><br></p>               →  :has(br:only-child) with no text
+     · <p>  whitespace  </p>     →  trickier — handled via min-height */
+.eg-territory .eg-box p:empty,
+.eg-territory .eg-box p:has(br:only-child):not(:has(*:not(br))) {
     display: none !important;
+    margin: 0 !important;
+    height: 0 !important;
 }
 
 /* Pull-quote — a highlighted callout inside the lore.
@@ -1679,36 +1811,43 @@ p.eg-leadp::first-letter {
             replace the inner <div class="eg-gal-img"> with:
                 <img class="eg-gal-img" src="..." alt="..." />
    ============================================================ */
-/* FLEXBOX layout — more reliable than grid in Lioden's content
-   pipeline. 2 cards per row, cards wrap automatically. */
+/* INLINE-BLOCK layout — most reliable cross-Lioden approach.
+   Two cards per row using explicit widths. The font-size:0 trick
+   eliminates whitespace gaps between inline-block siblings, and
+   each card resets font-size to its own value. */
 .eg-gal-grid {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 14px !important;
+    display: block !important;
+    font-size: 0 !important;         /* kill whitespace between inline-blocks */
+    text-align: left !important;
+    width: 100% !important;
     margin-top: 8px !important;
     position: relative !important;
     z-index: 1 !important;
-    justify-content: flex-start !important;
-    align-items: stretch !important;
-    width: 100% !important;
     box-sizing: border-box !important;
 }
 
-/* Each gallery card — exactly half the row minus half the gap.
-   This guarantees 2 cards per row regardless of how wide the
-   gallery box ends up being. */
+/* Each gallery card — exactly 49% wide, 2% gap, last in row no gap.
+   :nth-child(2n) targets every 2nd card to remove its right margin. */
 .eg-gal-card {
+    display: inline-block !important;
+    vertical-align: top !important;
+    width: 49% !important;
+    margin: 0 2% 14px 0 !important;
+    padding: 10px 10px 12px 10px !important;
     background: rgba(0, 0, 0, 0.30) !important;
     border: 1px solid rgba(168, 120, 56, 0.45) !important;
     border-radius: 4px !important;
-    padding: 10px 10px 12px 10px !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
     position: relative !important;
     text-align: center !important;
-    flex: 0 0 calc(50% - 7px) !important;
-    max-width: calc(50% - 7px) !important;
-    width: calc(50% - 7px) !important;
+    font-size: 13px !important;       /* restore from font-size:0 parent */
     box-sizing: border-box !important;
+    /* Reset flex stuff in case grid/flex applied previously */
+    flex: none !important;
+    max-width: 49% !important;
+}
+.eg-gal-card:nth-child(2n) {
+    margin-right: 0 !important;
 }
 .eg-gal-card:hover {
     transform: translateY(-3px) !important;
@@ -1813,76 +1952,68 @@ p.eg-leadp::first-letter {
 }
 .eg-gal-card:hover .eg-gal-caption { color: #f5e5b8 !important; }
 
-/* Avatar slot inside the Player's Info box — NOT a circle.
-   The customer requested no circle. We build a decorative box
-   that MATCHES the king's portrait frame in [11]: gold border,
-   corner stars, sparkles, and a slow breathing-gold animation. */
+/* Player avatar — matched PAIR with the king's portrait frame in [11].
+   Same gold border, same breathing animation, same corner stars.
+   The customer asked for both portraits to look like a set. */
 .eg-avatar {
     display: block !important;
     width: 100% !important;
     max-width: 220px !important;
     aspect-ratio: 4/3 !important;
     margin: 0 auto 16px auto !important;
-    background: rgba(10, 27, 48, 0.55) !important;
-    border: 1px solid rgba(168, 120, 56, 0.65) !important;
+    background: rgba(10, 27, 48, 0.65) !important;
+    border: 2px solid rgba(168, 120, 56, 0.75) !important;
     border-radius: 4px !important;
+    padding: 6px !important;             /* matches the king's 8px (smaller box, smaller pad) */
     overflow: hidden !important;
     position: relative !important;
+    box-sizing: content-box !important;
     box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.55),
-        inset 0 0 18px rgba(168, 120, 56, 0.12) !important;
-    /* Same breathing-frame animation the king cell uses */
-    animation: eg-frame-breathe 6s ease-in-out infinite !important;
+        0 6px 22px rgba(0, 0, 0, 0.55),
+        0 0 24px rgba(232, 192, 104, 0.30),
+        inset 0 0 0 1px rgba(232, 192, 104, 0.18) !important;
+    animation: eg-portrait-breathe 6s ease-in-out infinite !important;
 }
 
-/* ① Pulsing HALO behind the avatar image (matches king cell) */
+/* ① Pulsing HALO around the avatar (matches king) */
 .eg-avatar::before {
     content: "" !important;
     position: absolute !important;
-    inset: 0 !important;
+    inset: -10px !important;
     background: radial-gradient(
         ellipse at 50% 50%,
-        rgba(232, 192, 104, 0.30) 0%,
-        rgba(212, 160, 88, 0.18) 40%,
-        transparent 80%
+        rgba(232, 192, 104, 0.40) 0%,
+        rgba(212, 160, 88, 0.22) 50%,
+        transparent 85%
     ) !important;
     animation: eg-mane-glow 5s ease-in-out infinite !important;
     pointer-events: none !important;
-    z-index: 0 !important;
-    filter: blur(1px) !important;
+    z-index: -1 !important;
+    filter: blur(6px) !important;
+    border-radius: 8px !important;
 }
 
-/* ② CORNER STARS + SPARKLES — drawn the same way as the king cell */
+/* ② CORNER STARS — same pattern as the king's portrait */
 .eg-avatar::after {
     content: "" !important;
     position: absolute !important;
-    inset: 0 !important;
-    background-image:
-        /* Four corner stars */
-        radial-gradient(circle 2px at 8px 8px,
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2px at calc(100% - 8px) 8px,
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2px at 8px calc(100% - 8px),
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2px at calc(100% - 8px) calc(100% - 8px),
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        /* Scattered sparkles around the avatar */
-        radial-gradient(circle 1.2px at 20px 26px,
-            rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 1px at calc(100% - 20px) 26px,
-            rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 1.4px at 22px calc(100% - 26px),
-            rgba(255, 230, 160, 0.95), transparent 60%),
-        radial-gradient(circle 1px at calc(100% - 22px) calc(100% - 26px),
-            rgba(255, 215, 130, 0.85), transparent 60%);
-    background-repeat: no-repeat !important;
-    animation: eg-twinkle 4.5s ease-in-out infinite !important;
+    inset: -8px !important;
     pointer-events: none !important;
-    z-index: 1 !important;
+    z-index: 3 !important;
+    background-image:
+        radial-gradient(circle 2.5px at 0 0,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at 100% 0,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at 0 100%,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at 100% 100%,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%);
+    background-repeat: no-repeat !important;
+    animation: eg-twinkle 4s ease-in-out infinite !important;
 }
 
-/* The actual avatar image / SVG — sits ABOVE halo & sparkles */
+/* The actual avatar image / SVG — fills the inner content area */
 .eg-avatar img, .eg-avatar svg {
     display: block !important;
     width: 100% !important;
@@ -1890,140 +2021,141 @@ p.eg-leadp::first-letter {
     object-fit: cover !important;
     position: relative !important;
     z-index: 2 !important;
+    border-radius: 2px !important;
 }
 
 
 /* ============================================================
-   [11] KING ANIMATION — decorative gold-framed BOX around the
-        king's portrait, with effects CONSTRAINED inside the box.
+   [11] KING ANIMATION — Lioden builds the king as a STACK of
+        composite images inside this structure:
 
-        Lioden displays the king image inside a table cell:
-            <table id="about"> → <tr class="right"> → <td>
-        We turn that cell into a proper "portrait frame":
-          · gold border + dark navy background
-          · corner star ornaments (four)
-          · inner halo glow that pulses behind the king
-          · tiny twinkling stars sprinkled around the image
-          · NO horizontal streaks anymore — they extended past
-            the cell and overlapped neighbouring elements.
+            <table id="about">
+              <tr class="right">
+                <td>
+                  <a>
+                    <div id="lion_image">            ← we style THIS
+                      <div class="lion-image-block">  ← Lioden's clip box
+                        <img …>                       ← absolutely-positioned
+                        <img …>                       ← layers: bg, decor,
+                        … many more …                 ← body, mane, eyes,
+                      </div>                          ← markings, etc.
+                    </div>
+                  </a>
+                </td>
 
-        The frame matches the .eg-avatar styling in [10] so both
-        portraits feel like a matched pair.
+        ▶ KEY INSIGHT: NEVER style the <td>, <a>, or .lion-image-block.
+          They control the composite image's clipping/positioning. If
+          we add padding/overflow/background to any of them, the
+          stacked layers misalign and the king "disappears".
+        ▶ INSTEAD: style #lion_image itself — the outer wrapper. Add
+          a gold-frame border, a halo behind it, and corner sparkles
+          around it. The composite inside is untouched.
    ============================================================ */
 
-/* The king CELL — turn it into a portrait frame.
-   `overflow: hidden` is the key: it CONSTRAINS the halo and
-   sparkles to the cell area so nothing bleeds onto the stats. */
+/* ─── Reset our previous (broken) styling on the td and pseudo-elements */
 table#about > tbody > tr.right > td:first-child {
     position: relative !important;
-    overflow: hidden !important;
-    z-index: 1 !important;
-    padding: 14px !important;
-    background: rgba(10, 27, 48, 0.55) !important;
-    border: 1px solid rgba(168, 120, 56, 0.65) !important;
-    border-radius: 4px !important;
-    box-shadow:
-        0 4px 18px rgba(0, 0, 0, 0.55),
-        inset 0 0 24px rgba(168, 120, 56, 0.10) !important;
+    overflow: visible !important;
+    padding: 10px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    animation: none !important;
+    z-index: auto !important;
 }
-
-/* Make sure the king image itself sits ABOVE the halo & sparkles */
-table#about > tbody > tr.right > td:first-child > img,
-table#about > tbody > tr.right > td:first-child img {
-    position: relative !important;
-    z-index: 2 !important;
-    border: 1px solid rgba(168, 120, 56, 0.45) !important;
-    border-radius: 3px !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55) !important;
-    display: block !important;
-}
-
-/* ① The pulsing HALO behind the king — radial gold glow constrained
-   to the cell. No more streaking off into space. */
-table#about > tbody > tr.right > td:first-child::before {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background: radial-gradient(
-        ellipse at 50% 50%,
-        rgba(232, 192, 104, 0.45) 0%,
-        rgba(212, 160, 88, 0.28) 35%,
-        rgba(168, 120, 56, 0.12) 65%,
-        transparent 90%
-    ) !important;
-    animation: eg-mane-glow 5s ease-in-out infinite !important;
-    pointer-events: none !important;
-    z-index: 0 !important;          /* behind the image, above the bg */
-    filter: blur(2px) !important;
-}
-
-/* ② TWINKLING STAR FIELD inside the cell — small gold sparks
-   around the king image, layered behind it.  Drawn entirely as
-   background-images on the cell's ::after pseudo-element so they
-   stay 100% inside the cell. */
-table#about > tbody > tr.right > td:first-child::after {
-    content: "" !important;
-    position: absolute !important;
-    inset: 0 !important;
-    background-image:
-        /* CORNER ORNAMENTS — four small gold stars, one per corner */
-        radial-gradient(circle 2.5px at 10px 10px,
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2.5px at calc(100% - 10px) 10px,
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2.5px at 10px calc(100% - 10px),
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 2.5px at calc(100% - 10px) calc(100% - 10px),
-            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
-        /* SCATTERED SPARKLES — twinkly bits AROUND (but not on)
-           the king image. They sit in the cell padding area. */
-        radial-gradient(circle 1.4px at 30px 40px,
-            rgba(255, 215, 130, 0.90), transparent 60%),
-        radial-gradient(circle 1.2px at calc(100% - 30px) 50px,
-            rgba(255, 215, 130, 0.90), transparent 60%),
-        radial-gradient(circle 1.6px at 22px calc(50% + 10px),
-            rgba(255, 230, 160, 0.95), transparent 60%),
-        radial-gradient(circle 1.2px at calc(100% - 22px) calc(50% - 14px),
-            rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 1.5px at 40px calc(100% - 30px),
-            rgba(255, 230, 160, 0.95), transparent 60%),
-        radial-gradient(circle 1.3px at calc(100% - 40px) calc(100% - 30px),
-            rgba(255, 215, 130, 0.85), transparent 60%);
-    background-repeat: no-repeat !important;
-    animation: eg-twinkle 5s ease-in-out infinite !important;
-    pointer-events: none !important;
-    z-index: 1 !important;          /* above halo, below image */
-}
-
-/* ③ Subtle inner shimmer around the cell border — a faint gold
-   pulse on the frame itself, just enough to feel "alive". */
-table#about > tbody > tr.right > td:first-child {
-    /* This animation is attached to the cell directly so the
-       border-color breathes. Already styled above; keyframes here. */
-    animation: eg-frame-breathe 6s ease-in-out infinite !important;
-}
-@keyframes eg-frame-breathe {
-    0%, 100% {
-        border-color: rgba(168, 120, 56, 0.55);
-        box-shadow:
-            0 4px 18px rgba(0, 0, 0, 0.55),
-            inset 0 0 24px rgba(168, 120, 56, 0.10);
-    }
-    50% {
-        border-color: rgba(232, 192, 104, 0.85);
-        box-shadow:
-            0 4px 18px rgba(0, 0, 0, 0.55),
-            0 0 18px rgba(232, 192, 104, 0.35),
-            inset 0 0 28px rgba(168, 120, 56, 0.22);
-    }
-}
-
-/* Reset the previous wisp layers we no longer want */
+table#about > tbody > tr.right > td:first-child::before,
+table#about > tbody > tr.right > td:first-child::after,
 table#about > tbody > tr.right::before,
 table#about > tbody > tr.right::after,
 table#about::before {
     content: none !important;
     display: none !important;
+}
+
+/* ─── The KING'S FRAME — applied to #lion_image (Lioden's wrapper) ─── */
+#lion_image {
+    position: relative !important;
+    display: inline-block !important;
+    border: 2px solid rgba(168, 120, 56, 0.75) !important;
+    border-radius: 4px !important;
+    background: rgba(10, 27, 48, 0.65) !important;
+    padding: 8px !important;
+    box-sizing: content-box !important;     /* keep the 200x200 viewport intact */
+    box-shadow:
+        0 6px 22px rgba(0, 0, 0, 0.65),
+        0 0 24px rgba(232, 192, 104, 0.35),
+        inset 0 0 0 1px rgba(232, 192, 104, 0.18) !important;
+    animation: eg-portrait-breathe 6s ease-in-out infinite !important;
+    overflow: visible !important;
+    /* let the halo bleed out a touch — sparkles handled by ::after */
+}
+
+/* ① HALO behind the king — soft gold glow that pulses */
+#lion_image::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: -14px !important;
+    border-radius: 8px !important;
+    background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(232, 192, 104, 0.45) 0%,
+        rgba(212, 160, 88, 0.25) 50%,
+        transparent 85%
+    ) !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+    animation: eg-mane-glow 5s ease-in-out infinite !important;
+    filter: blur(8px) !important;
+}
+
+/* ② CORNER STARS + sparkles — drawn just outside the frame */
+#lion_image::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: -18px !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    background-image:
+        /* Four corner stars */
+        radial-gradient(circle 3px at 0 0,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 3px at 100% 0,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 3px at 0 100%,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 3px at 100% 100%,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        /* Mid-edge sparkles */
+        radial-gradient(circle 1.6px at 50% 0,
+            rgba(255, 230, 160, 0.85) 50%, transparent 100%),
+        radial-gradient(circle 1.6px at 50% 100%,
+            rgba(255, 230, 160, 0.85) 50%, transparent 100%),
+        radial-gradient(circle 1.6px at 0 50%,
+            rgba(255, 230, 160, 0.85) 50%, transparent 100%),
+        radial-gradient(circle 1.6px at 100% 50%,
+            rgba(255, 230, 160, 0.85) 50%, transparent 100%);
+    background-repeat: no-repeat !important;
+    animation: eg-twinkle 4s ease-in-out infinite !important;
+}
+
+/* ── BREATHING-FRAME keyframes — used by BOTH king and player avatar.
+   Animates the border-color + glow to feel "alive". */
+@keyframes eg-portrait-breathe {
+    0%, 100% {
+        border-color: rgba(168, 120, 56, 0.75);
+        box-shadow:
+            0 6px 22px rgba(0, 0, 0, 0.65),
+            0 0 24px rgba(232, 192, 104, 0.35),
+            inset 0 0 0 1px rgba(232, 192, 104, 0.18);
+    }
+    50% {
+        border-color: rgba(232, 192, 104, 0.95);
+        box-shadow:
+            0 6px 22px rgba(0, 0, 0, 0.65),
+            0 0 40px rgba(232, 192, 104, 0.65),
+            inset 0 0 0 1px rgba(232, 192, 104, 0.40);
+    }
 }
 
 
