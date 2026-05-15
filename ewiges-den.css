@@ -1341,25 +1341,57 @@ button.s-chat-message_menu {
 /* ─── TEXT ELEMENTS INSIDE BOXES ─────────────────────────────
    These are the small style tokens the customer can drop into
    their lore: pull-quote, divider, drop-cap, closing paragraph,
-   tag pills … */
+   tag pills …
+
+   ▶ LIODEN SPACING FIX ▶ Lioden's content editor likes to insert
+   <br> tags between elements automatically. Those <br>s create
+   GIANT vertical gaps that the customer never asked for. The
+   block below collapses any <br> inside an .eg-box so the
+   spacing actually matches what the preview shows.
+
+   If you DO want a line-break, use a <p> tag (new paragraph) or
+   <hr class="eg-divider"> (gold divider). */
+.eg-box br {
+    display: block !important;
+    content: "" !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 0 !important;
+    height: 0 !important;
+    font-size: 0 !important;
+}
+
+/* All paragraphs inside a box — tight margins, justified text. */
 .eg-box p {
     margin: 0 0 14px 0 !important;
+    padding: 0 !important;
     text-align: justify !important;
     hyphens: auto !important;
     position: relative !important;
     z-index: 1 !important;          /* sit above the ::after corner ornaments */
+    line-height: 1.7 !important;
 }
 .eg-box p:last-child { margin-bottom: 0 !important; }
+.eg-box p:first-child { margin-top: 0 !important; }
+
+/* When Lioden wraps things in its own <p> tags, those auto-wrapped
+   paragraphs sometimes appear empty — nuke them so they don't
+   create extra blank lines. */
+.eg-box p:empty,
+.eg-box p:has(br:only-child) {
+    display: none !important;
+}
 
 /* Pull-quote — a highlighted callout inside the lore.
    Works on EITHER <blockquote class="eg-pullquote"> OR
-   <div class="eg-pullquote">.  We reset blockquote-specific
-   margins so both behave identically.  */
+   <div class="eg-pullquote">. The quote marks are drawn as
+   pseudo-elements positioned OUTSIDE the content flow so the
+   first line never gets pushed down. */
 .eg-pullquote,
 blockquote.eg-pullquote {
     display: block !important;
-    margin: 28px auto !important;
-    padding: 26px 36px 22px 36px !important;
+    margin: 24px auto !important;
+    padding: 18px 36px 18px 36px !important;
     max-width: 86% !important;
     font-family: "Cormorant Garamond", serif !important;
     font-style: italic !important;
@@ -1380,36 +1412,63 @@ blockquote.eg-pullquote {
         0 1px 2px rgba(0, 0, 0, 0.75) !important;
     position: relative !important;
     z-index: 1 !important;
-    quotes: "\201C" "\201D" !important;
+    text-indent: 0 !important;
+    /* Reset browser blockquote defaults so <blockquote> behaves
+       the same as <div>. */
+    quotes: none !important;
+    -webkit-margin-before: 24px !important;
+    -webkit-margin-after: 24px !important;
+}
+/* Reset any nested <p> Lioden might have added inside the blockquote */
+.eg-pullquote > p,
+blockquote.eg-pullquote > p {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    font-style: inherit !important;
+    color: inherit !important;
+}
+/* Reset any browser-default opening glyph (some browsers add one
+   via `content: open-quote`) */
+.eg-pullquote::first-line,
+blockquote.eg-pullquote::first-line {
     text-indent: 0 !important;
 }
-/* Big decorative opening quote — top-left, absolutely positioned */
+
+/* Big decorative opening quote — anchored to the TOP-LEFT corner,
+   sitting half outside the box, NOT in the content flow. */
 .eg-pullquote::before,
 blockquote.eg-pullquote::before {
     content: "\201C" !important;
     position: absolute !important;
-    top: -6px !important;
-    left: 8px !important;
+    top: -14px !important;
+    left: 10px !important;
     color: rgba(232, 192, 104, 0.85) !important;
     font-family: "Cormorant Garamond", serif !important;
-    font-size: 52px !important;
+    font-size: 56px !important;
     font-style: normal !important;
+    font-weight: 700 !important;
     line-height: 1 !important;
+    height: 32px !important;
     text-shadow: 0 0 14px rgba(232, 192, 104, 0.55) !important;
+    pointer-events: none !important;
 }
-/* Big decorative closing quote — bottom-right, absolutely positioned */
+/* Big decorative closing quote — bottom-right corner */
 .eg-pullquote::after,
 blockquote.eg-pullquote::after {
     content: "\201D" !important;
     position: absolute !important;
-    bottom: -22px !important;
-    right: 12px !important;
+    bottom: -28px !important;
+    right: 14px !important;
     color: rgba(232, 192, 104, 0.85) !important;
     font-family: "Cormorant Garamond", serif !important;
-    font-size: 52px !important;
+    font-size: 56px !important;
     font-style: normal !important;
+    font-weight: 700 !important;
     line-height: 1 !important;
+    height: 32px !important;
     text-shadow: 0 0 14px rgba(232, 192, 104, 0.55) !important;
+    pointer-events: none !important;
 }
 
 /* Thin gold INLINE divider — use <hr class="eg-divider"> inside a box */
@@ -1454,25 +1513,58 @@ blockquote.eg-pullquote::after {
     animation: eg-mane-glow 4s ease-in-out infinite !important;
 }
 
-/* Drop-cap — first letter of the lore styled extra-large.
-   Apply with <p class="eg-leadp">…</p> on the FIRST paragraph.
+/* ── DROP-CAP — TWO METHODS for max reliability ──
 
-   We use display: block + first-letter so it survives even when
-   the paragraph is justified or right-aligned.  */
+   METHOD A (PREFERRED): wrap the first letter in a <span>:
+       <p class="eg-leadp">
+           <span class="eg-dropcap">L</span>orem ipsum dolor sit amet…
+       </p>
+     Works in every browser. Survives Lioden's HTML cleanup.
+
+   METHOD B (FALLBACK): just add the .eg-leadp class:
+       <p class="eg-leadp">Lorem ipsum…</p>
+     Uses CSS ::first-letter. Works when Lioden doesn't strip it.
+
+   You only need ONE of the two — A is what I recommend. */
+
+/* Container paragraph for the lead — left-aligned so the float clears */
 .eg-box .eg-leadp,
+.eg-box p.eg-leadp,
 p.eg-leadp {
-    text-align: left !important;     /* drop-cap doesn't play nice with justify */
-    overflow: hidden !important;     /* clear the float */
+    text-align: left !important;
+    overflow: hidden !important;     /* contain the floated drop-cap */
+    margin-top: 0 !important;
 }
+
+/* METHOD A — explicit .eg-dropcap span (recommended). Big, gold,
+   glowing first letter that floats to the left of the paragraph. */
+.eg-dropcap {
+    font-family: "Cinzel", "Cormorant Garamond", serif !important;
+    font-size: 64px !important;
+    font-weight: 700 !important;
+    float: left !important;
+    line-height: 0.85 !important;
+    padding: 8px 12px 0 0 !important;
+    margin: 4px 6px 0 0 !important;
+    color: #e8c068 !important;
+    text-shadow:
+        0 0 18px rgba(232, 192, 104, 0.75),
+        0 0 34px rgba(212, 160, 88, 0.45),
+        0 2px 4px rgba(0, 0, 0, 0.65) !important;
+    display: inline-block !important;
+}
+
+/* METHOD B — pseudo-element fallback. Same look as A. */
 .eg-box .eg-leadp::first-letter,
+.eg-box p.eg-leadp::first-letter,
 p.eg-leadp::first-letter {
     font-family: "Cinzel", "Cormorant Garamond", serif !important;
     font-size: 64px !important;
     font-weight: 700 !important;
     float: left !important;
-    line-height: 0.80 !important;
-    padding: 8px 12px 2px 0 !important;
-    margin-right: 4px !important;
+    line-height: 0.85 !important;
+    padding: 8px 12px 0 0 !important;
+    margin: 4px 6px 0 0 !important;
     color: #e8c068 !important;
     text-shadow:
         0 0 18px rgba(232, 192, 104, 0.75),
@@ -1587,16 +1679,24 @@ p.eg-leadp::first-letter {
             replace the inner <div class="eg-gal-img"> with:
                 <img class="eg-gal-img" src="..." alt="..." />
    ============================================================ */
+/* FLEXBOX layout — more reliable than grid in Lioden's content
+   pipeline. 2 cards per row, cards wrap automatically. */
 .eg-gal-grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
     gap: 14px !important;
     margin-top: 8px !important;
     position: relative !important;
     z-index: 1 !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Each gallery card — the outer card frame */
+/* Each gallery card — exactly half the row minus half the gap.
+   This guarantees 2 cards per row regardless of how wide the
+   gallery box ends up being. */
 .eg-gal-card {
     background: rgba(0, 0, 0, 0.30) !important;
     border: 1px solid rgba(168, 120, 56, 0.45) !important;
@@ -1605,6 +1705,10 @@ p.eg-leadp::first-letter {
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
     position: relative !important;
     text-align: center !important;
+    flex: 0 0 calc(50% - 7px) !important;
+    max-width: calc(50% - 7px) !important;
+    width: calc(50% - 7px) !important;
+    box-sizing: border-box !important;
 }
 .eg-gal-card:hover {
     transform: translateY(-3px) !important;
@@ -1710,199 +1814,216 @@ p.eg-leadp::first-letter {
 .eg-gal-card:hover .eg-gal-caption { color: #f5e5b8 !important; }
 
 /* Avatar slot inside the Player's Info box — NOT a circle.
-   The customer specifically requested no circle. We use a
-   gold-bordered rectangle with a tiny clipped-corner detail. */
+   The customer requested no circle. We build a decorative box
+   that MATCHES the king's portrait frame in [11]: gold border,
+   corner stars, sparkles, and a slow breathing-gold animation. */
 .eg-avatar {
     display: block !important;
     width: 100% !important;
     max-width: 220px !important;
     aspect-ratio: 4/3 !important;
     margin: 0 auto 16px auto !important;
-    background: rgba(0, 0, 0, 0.30) !important;
-    border: 1px solid rgba(168, 120, 56, 0.55) !important;
-    border-radius: 3px !important;
+    background: rgba(10, 27, 48, 0.55) !important;
+    border: 1px solid rgba(168, 120, 56, 0.65) !important;
+    border-radius: 4px !important;
     overflow: hidden !important;
     position: relative !important;
     box-shadow:
-        0 2px 12px rgba(0, 0, 0, 0.45),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.45) !important;
+        0 4px 14px rgba(0, 0, 0, 0.55),
+        inset 0 0 18px rgba(168, 120, 56, 0.12) !important;
+    /* Same breathing-frame animation the king cell uses */
+    animation: eg-frame-breathe 6s ease-in-out infinite !important;
 }
-.eg-avatar::after {
-    /* The little decorative gold corner brackets ┐  └ */
+
+/* ① Pulsing HALO behind the avatar image (matches king cell) */
+.eg-avatar::before {
     content: "" !important;
     position: absolute !important;
-    inset: 4px !important;
-    border: 1px solid rgba(168, 120, 56, 0.30) !important;
+    inset: 0 !important;
+    background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(232, 192, 104, 0.30) 0%,
+        rgba(212, 160, 88, 0.18) 40%,
+        transparent 80%
+    ) !important;
+    animation: eg-mane-glow 5s ease-in-out infinite !important;
     pointer-events: none !important;
+    z-index: 0 !important;
+    filter: blur(1px) !important;
 }
+
+/* ② CORNER STARS + SPARKLES — drawn the same way as the king cell */
+.eg-avatar::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background-image:
+        /* Four corner stars */
+        radial-gradient(circle 2px at 8px 8px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2px at calc(100% - 8px) 8px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2px at 8px calc(100% - 8px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2px at calc(100% - 8px) calc(100% - 8px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        /* Scattered sparkles around the avatar */
+        radial-gradient(circle 1.2px at 20px 26px,
+            rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 1px at calc(100% - 20px) 26px,
+            rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 1.4px at 22px calc(100% - 26px),
+            rgba(255, 230, 160, 0.95), transparent 60%),
+        radial-gradient(circle 1px at calc(100% - 22px) calc(100% - 26px),
+            rgba(255, 215, 130, 0.85), transparent 60%);
+    background-repeat: no-repeat !important;
+    animation: eg-twinkle 4.5s ease-in-out infinite !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+}
+
+/* The actual avatar image / SVG — sits ABOVE halo & sparkles */
 .eg-avatar img, .eg-avatar svg {
     display: block !important;
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
+    position: relative !important;
+    z-index: 2 !important;
 }
 
 
 /* ============================================================
-   [11] KING ANIMATION — golden halo + mane wisps + starfield
-        flowing around the king's portrait.
+   [11] KING ANIMATION — decorative gold-framed BOX around the
+        king's portrait, with effects CONSTRAINED inside the box.
 
-        Lioden displays the king as a SQUARE/RECTANGULAR image
-        inside a specific table cell:
+        Lioden displays the king image inside a table cell:
             <table id="about"> → <tr class="right"> → <td>
-        We attach our effects to that cell via pseudo-elements so
-        we never have to touch Lioden's HTML.
+        We turn that cell into a proper "portrait frame":
+          · gold border + dark navy background
+          · corner star ornaments (four)
+          · inner halo glow that pulses behind the king
+          · tiny twinkling stars sprinkled around the image
+          · NO horizontal streaks anymore — they extended past
+            the cell and overlapped neighbouring elements.
 
-        FOUR layers stack around the king now (was 3 before):
-          ① a HUGE pulsing golden HALO behind him (bigger than before)
-          ② a SECONDARY inner halo with a warm sun-glow
-          ③ streaks of MANE WISPS flowing to the right
-          ④ a sparkle cloud — small gold pinpricks twinkling around him
-
-        The wisp positions assume a roughly 220-300px square king
-        image. If you want to push the wisps further from the king,
-        increase the `width` of the wisp ::after.
+        The frame matches the .eg-avatar styling in [10] so both
+        portraits feel like a matched pair.
    ============================================================ */
 
-/* The row positioning anchor */
-table#about > tbody > tr.right {
-    position: relative !important;
-}
-
-/* The king CELL — positioning context, allow overflow */
+/* The king CELL — turn it into a portrait frame.
+   `overflow: hidden` is the key: it CONSTRAINS the halo and
+   sparkles to the cell area so nothing bleeds onto the stats. */
 table#about > tbody > tr.right > td:first-child {
     position: relative !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     z-index: 1 !important;
-    padding: 40px !important;            /* breathing room for the halo */
+    padding: 14px !important;
+    background: rgba(10, 27, 48, 0.55) !important;
+    border: 1px solid rgba(168, 120, 56, 0.65) !important;
+    border-radius: 4px !important;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.55),
+        inset 0 0 24px rgba(168, 120, 56, 0.10) !important;
 }
 
-/* ① OUTER HALO — much larger and brighter than before */
+/* Make sure the king image itself sits ABOVE the halo & sparkles */
+table#about > tbody > tr.right > td:first-child > img,
+table#about > tbody > tr.right > td:first-child img {
+    position: relative !important;
+    z-index: 2 !important;
+    border: 1px solid rgba(168, 120, 56, 0.45) !important;
+    border-radius: 3px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55) !important;
+    display: block !important;
+}
+
+/* ① The pulsing HALO behind the king — radial gold glow constrained
+   to the cell. No more streaking off into space. */
 table#about > tbody > tr.right > td:first-child::before {
     content: "" !important;
     position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 480px !important;
-    height: 480px !important;
-    border-radius: 50% !important;
+    inset: 0 !important;
     background: radial-gradient(
-        circle at 50% 50%,
-        rgba(255, 215, 130, 0.55) 0%,
-        rgba(232, 192, 104, 0.45) 18%,
-        rgba(212, 160, 88, 0.28) 38%,
-        rgba(168, 120, 56, 0.12) 60%,
-        transparent 80%
+        ellipse at 50% 50%,
+        rgba(232, 192, 104, 0.45) 0%,
+        rgba(212, 160, 88, 0.28) 35%,
+        rgba(168, 120, 56, 0.12) 65%,
+        transparent 90%
     ) !important;
-    transform: translate(-50%, -50%) !important;
-    animation: eg-mane-glow 4s ease-in-out infinite !important;
+    animation: eg-mane-glow 5s ease-in-out infinite !important;
     pointer-events: none !important;
-    z-index: -2 !important;
-    filter: blur(3px) !important;
+    z-index: 0 !important;          /* behind the image, above the bg */
+    filter: blur(2px) !important;
 }
 
-/* ② MANE WISPS — three streaks flowing rightward, each at a
-   different size & speed.  Made FAT and BRIGHT so they're visible
-   against the dark navy. */
+/* ② TWINKLING STAR FIELD inside the cell — small gold sparks
+   around the king image, layered behind it.  Drawn entirely as
+   background-images on the cell's ::after pseudo-element so they
+   stay 100% inside the cell. */
 table#about > tbody > tr.right > td:first-child::after {
     content: "" !important;
     position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 360px !important;
-    height: 50px !important;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(255, 215, 130, 0.85) 25%,
-        rgba(255, 230, 160, 0.95) 50%,
-        rgba(255, 215, 130, 0.85) 75%,
-        transparent 100%
-    ) !important;
-    border-radius: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    animation: eg-mane-wisp 3s ease-in-out infinite !important;
-    pointer-events: none !important;
-    z-index: -1 !important;
-    filter: blur(4px) !important;
-    opacity: 0.90 !important;
-}
-
-/* ③ SECOND wisp — smaller, faster, slight vertical offset */
-table#about > tbody > tr.right::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 38% !important;
-    left: 30% !important;
-    width: 240px !important;
-    height: 26px !important;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(232, 192, 104, 0.85) 35%,
-        rgba(255, 215, 130, 0.95) 55%,
-        transparent 100%
-    ) !important;
-    border-radius: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    animation: eg-mane-wisp 2.4s ease-in-out infinite 0.5s !important;
-    pointer-events: none !important;
-    z-index: -1 !important;
-    filter: blur(3px) !important;
-    opacity: 0.85 !important;
-}
-
-/* ④ THIRD wisp + sparkle ring — hangs off the table itself */
-table#about > tbody > tr.right::after {
-    content: "" !important;
-    position: absolute !important;
-    top: 62% !important;
-    left: 30% !important;
-    width: 200px !important;
-    height: 20px !important;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(212, 160, 88, 0.75) 35%,
-        rgba(232, 192, 104, 0.85) 55%,
-        transparent 100%
-    ) !important;
-    border-radius: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    animation: eg-mane-wisp 3.6s ease-in-out infinite 1.2s !important;
-    pointer-events: none !important;
-    z-index: -1 !important;
-    filter: blur(3px) !important;
-    opacity: 0.75 !important;
-}
-
-/* ⑤ SPARKLE CLOUD around the king — small golden pinpricks
-   that twinkle. Attached to the table#about itself. */
-table#about {
-    position: relative !important;
-}
-table#about::before {
-    content: "" !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 540px !important;
-    height: 360px !important;
-    transform: translate(-50%, -50%) !important;
-    pointer-events: none !important;
-    z-index: -1 !important;
+    inset: 0 !important;
     background-image:
-        radial-gradient(circle 2px at 60px 30px,   rgba(255, 230, 160, 0.95), transparent 60%),
-        radial-gradient(circle 1.5px at 140px 80px, rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 2.2px at 240px 24px, rgba(255, 245, 200, 0.95), transparent 60%),
-        radial-gradient(circle 1.8px at 360px 60px, rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 2px at 480px 30px,  rgba(255, 230, 160, 0.95), transparent 60%),
-        radial-gradient(circle 1.4px at 80px 200px, rgba(255, 215, 130, 0.85), transparent 60%),
-        radial-gradient(circle 2.2px at 200px 260px, rgba(255, 245, 200, 0.95), transparent 60%),
-        radial-gradient(circle 1.8px at 360px 230px, rgba(232, 192, 104, 0.85), transparent 60%),
-        radial-gradient(circle 2px at 480px 260px, rgba(255, 230, 160, 0.95), transparent 60%);
+        /* CORNER ORNAMENTS — four small gold stars, one per corner */
+        radial-gradient(circle 2.5px at 10px 10px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at calc(100% - 10px) 10px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at 10px calc(100% - 10px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at calc(100% - 10px) calc(100% - 10px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        /* SCATTERED SPARKLES — twinkly bits AROUND (but not on)
+           the king image. They sit in the cell padding area. */
+        radial-gradient(circle 1.4px at 30px 40px,
+            rgba(255, 215, 130, 0.90), transparent 60%),
+        radial-gradient(circle 1.2px at calc(100% - 30px) 50px,
+            rgba(255, 215, 130, 0.90), transparent 60%),
+        radial-gradient(circle 1.6px at 22px calc(50% + 10px),
+            rgba(255, 230, 160, 0.95), transparent 60%),
+        radial-gradient(circle 1.2px at calc(100% - 22px) calc(50% - 14px),
+            rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 1.5px at 40px calc(100% - 30px),
+            rgba(255, 230, 160, 0.95), transparent 60%),
+        radial-gradient(circle 1.3px at calc(100% - 40px) calc(100% - 30px),
+            rgba(255, 215, 130, 0.85), transparent 60%);
     background-repeat: no-repeat !important;
-    animation: eg-twinkle 4s ease-in-out infinite !important;
+    animation: eg-twinkle 5s ease-in-out infinite !important;
+    pointer-events: none !important;
+    z-index: 1 !important;          /* above halo, below image */
+}
+
+/* ③ Subtle inner shimmer around the cell border — a faint gold
+   pulse on the frame itself, just enough to feel "alive". */
+table#about > tbody > tr.right > td:first-child {
+    /* This animation is attached to the cell directly so the
+       border-color breathes. Already styled above; keyframes here. */
+    animation: eg-frame-breathe 6s ease-in-out infinite !important;
+}
+@keyframes eg-frame-breathe {
+    0%, 100% {
+        border-color: rgba(168, 120, 56, 0.55);
+        box-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.55),
+            inset 0 0 24px rgba(168, 120, 56, 0.10);
+    }
+    50% {
+        border-color: rgba(232, 192, 104, 0.85);
+        box-shadow:
+            0 4px 18px rgba(0, 0, 0, 0.55),
+            0 0 18px rgba(232, 192, 104, 0.35),
+            inset 0 0 28px rgba(168, 120, 56, 0.22);
+    }
+}
+
+/* Reset the previous wisp layers we no longer want */
+table#about > tbody > tr.right::before,
+table#about > tbody > tr.right::after,
+table#about::before {
+    content: none !important;
+    display: none !important;
 }
 
 

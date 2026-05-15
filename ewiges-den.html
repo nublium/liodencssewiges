@@ -98,40 +98,52 @@
     <!-- ════════════════════════════════════════════════════════
          BOX 1 — PRIDE'S LORE  (wide, full-width, on top)
          ════════════════════════════════════════════════════════
-         This is the long-form storytelling area. Drop your lore
-         here. Use <p> tags for paragraphs. The first paragraph
-         already has the "eg-leadp" class so the first letter
-         renders as a gold drop-cap. The LAST paragraph uses the
-         "eg-closing" class for a star-bracketed flourish.
+         This is the long-form storytelling area.
+
+         ▶ FIRST paragraph: keep the <span class="eg-dropcap">…</span>
+           wrapping the FIRST letter — that's what makes the gold
+           drop-cap render.
+         ▶ LAST paragraph: keep class="eg-closing" — that adds
+           the star-flanked flourish.
+         ▶ Pull-quote: <div class="eg-pullquote">…</div> renders
+           a highlighted callout with big gold quote marks.
+         ▶ Inline divider: <hr class="eg-divider">
+
+         IMPORTANT: don't press Enter twice between paragraphs.
+         Lioden inserts blank <br>s for every Enter, which makes
+         the text spread out way too far. Use a single <p>…</p>
+         block per paragraph and let the CSS handle the spacing.
     ════════════════════════════════════════════════════════ -->
     <div class="eg-box lore">
         <div class="eg-box-title">Pride's Lore</div>
         <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
-        <!-- FIRST paragraph: drop-cap on the first letter -->
+        <!-- FIRST paragraph: drop-cap on the first letter.
+             To use a different first letter, change the L inside
+             <span class="eg-dropcap">L</span> to your letter. -->
         <p class="eg-leadp">
-            [Open with a single, striking line about your pride —
-             a place, a feeling, a memory. The first letter will
-             render large and gold. Replace this entire paragraph
-             with your own opening.]
+            <span class="eg-dropcap">L</span>orem ipsum dolor sit amet,
+            consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+            ut labore et dolore magna aliqua. Replace this entire paragraph
+            with your opening — just keep the span around the first letter.
         </p>
 
         <p>
             [Second paragraph: history. Where did your pride come
-             from? What land do they call home? Who was the first
-             to roar beneath this sky?]
+            from? What land do they call home? Who was the first
+            to roar beneath this sky?]
         </p>
 
         <!-- A highlighted pull-quote — remove if you don't want it -->
         <div class="eg-pullquote">
-            [A line that captures the soul of your pride. Could be a
-             motto, a memory, or a vow. Will render with quote marks.]
+            [A line that captures the soul of your pride. Could be
+            a motto, a memory, or a vow.]
         </div>
 
         <p>
             [Third paragraph: the present. What does daily life look
-             like in your den? Hunts, rituals, family bonds, the
-             quiet hours between the stars and the dawn.]
+            like in your den? Hunts, rituals, family bonds, the quiet
+            hours between the stars and the dawn.]
         </p>
 
         <!-- A small gold divider INSIDE the box — remove if unwanted -->
@@ -140,7 +152,7 @@
         <!-- LAST paragraph: closing flourish with stars above & below -->
         <p class="eg-closing">
             [Closing paragraph: what comes next. Where is the pride
-             going? What do they still seek? End on the open wind.]
+            going? What do they still seek? End on the open wind.]
         </p>
     </div>
 
