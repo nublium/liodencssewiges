@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- UNDER THE STARLIT SKY · pride-overview banner — three lions under stars -->
+<!-- UNDER THE STARLIT SKY · pride-overview banner
+     LANDSCAPE ONLY · wide vista with the moon high, no animals -->
 <svg xmlns="http://www.w3.org/2000/svg" width="260" height="170" viewBox="0 0 260 170" preserveAspectRatio="xMidYMid slice">
 
     <defs>
@@ -13,10 +14,15 @@
             <stop offset="60%" stop-color="#d4a058"/>
             <stop offset="100%" stop-color="#e8c068"/>
         </linearGradient>
-        <radialGradient id="prMoon" cx="50%" cy="32%" r="20%">
-            <stop offset="0%"   stop-color="#f5e5b8" stop-opacity="0.95"/>
-            <stop offset="60%"  stop-color="#d4a058" stop-opacity="0.35"/>
+        <radialGradient id="prMoon" cx="50%" cy="32%" r="22%">
+            <stop offset="0%"   stop-color="#fff5e0" stop-opacity="0.95"/>
+            <stop offset="60%"  stop-color="#e8c068" stop-opacity="0.35"/>
             <stop offset="100%" stop-color="#a87838" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="prHorizonGlow" cx="50%" cy="95%" r="80%">
+            <stop offset="0%"   stop-color="#e8c068" stop-opacity="0.45"/>
+            <stop offset="60%"  stop-color="#a87838" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#0c1f33" stop-opacity="0"/>
         </radialGradient>
     </defs>
 
@@ -25,56 +31,56 @@
     <rect x="2" y="2" width="256" height="166" fill="none"
           stroke="url(#prFrame)" stroke-width="1.5" opacity="0.70"/>
 
-    <!-- Moon -->
-    <circle cx="130" cy="55" r="26" fill="url(#prMoon)"/>
-    <circle cx="130" cy="55" r="14" fill="#f5e5b8" opacity="0.95"/>
+    <!-- Large moon centre-top -->
+    <circle cx="130" cy="55" r="30" fill="url(#prMoon)"/>
+    <circle cx="130" cy="55" r="18" fill="#fff5e0" opacity="0.95"/>
+    <!-- moon shading -->
+    <circle cx="136" cy="50" r="3" fill="#e8c068" opacity="0.35"/>
+    <circle cx="124" cy="58" r="2" fill="#e8c068" opacity="0.30"/>
 
-    <!-- Stars -->
+    <!-- Dense stars across the upper sky -->
     <g fill="#f0e8d0">
-        <circle cx="22" cy="20" r="1.1" opacity="0.88"/>
-        <circle cx="54" cy="14" r="0.9" opacity="0.78"/>
-        <circle cx="78" cy="36" r="1.3" opacity="0.95"/>
-        <circle cx="190" cy="28" r="1.1" opacity="0.88"/>
-        <circle cx="220" cy="14" r="0.9" opacity="0.78"/>
-        <circle cx="240" cy="36" r="1.2" opacity="0.90"/>
-        <circle cx="38" cy="56" r="0.7" opacity="0.65"/>
-        <circle cx="208" cy="52" r="0.8" opacity="0.72"/>
+        <circle cx="14"  cy="14" r="1.2" opacity="0.92"/>
+        <circle cx="34"  cy="28" r="0.9" opacity="0.78"/>
+        <circle cx="54"  cy="12" r="1.4" opacity="0.95"/>
+        <circle cx="74"  cy="30" r="0.8" opacity="0.75"/>
+        <circle cx="94"  cy="14" r="1.1" opacity="0.88"/>
+        <circle cx="186" cy="14" r="1.2" opacity="0.90"/>
+        <circle cx="206" cy="30" r="0.9" opacity="0.80"/>
+        <circle cx="224" cy="12" r="1.3" opacity="0.92"/>
+        <circle cx="244" cy="28" r="0.8" opacity="0.75"/>
+        <circle cx="20"  cy="46" r="0.7" opacity="0.65"/>
+        <circle cx="60"  cy="60" r="0.9" opacity="0.78"/>
+        <circle cx="98"  cy="54" r="0.7" opacity="0.65"/>
+        <circle cx="162" cy="52" r="0.8" opacity="0.72"/>
+        <circle cx="200" cy="60" r="0.7" opacity="0.65"/>
+        <circle cx="232" cy="48" r="0.9" opacity="0.78"/>
     </g>
 
-    <!-- Distant ridge -->
-    <path d="M 0 110 L 30 95 L 70 105 L 130 90 L 190 102 L 230 95 L 260 100 L 260 130 L 0 130 Z"
+    <!-- Distant mountain ridge -->
+    <path d="M 0 105 L 30 86 L 70 100 L 110 78 L 150 96 L 195 80 L 230 92 L 260 88 L 260 130 L 0 130 Z"
           fill="#0c1f33" opacity="0.92"/>
 
-    <!-- Three lion silhouettes in a row -->
-    <g fill="#0a1525" opacity="0.92">
-        <!-- Left lion -->
-        <ellipse cx="68" cy="135" rx="16" ry="8"/>
-        <circle cx="54" cy="132" r="6"/>
+    <!-- Mid hills -->
+    <path d="M 0 124 Q 50 115, 110 126 Q 170 116, 220 124 Q 245 120, 260 124 L 260 145 L 0 145 Z"
+          fill="#1a2535" opacity="0.92"/>
 
-        <!-- Center king with golden mane -->
-        <ellipse cx="130" cy="138" rx="20" ry="9"/>
-        <circle cx="113" cy="134" r="7"/>
+    <!-- Warm horizon glow -->
+    <ellipse cx="130" cy="148" rx="180" ry="20" fill="url(#prHorizonGlow)"/>
 
-        <!-- Right lion -->
-        <ellipse cx="192" cy="135" rx="16" ry="8"/>
-        <circle cx="178" cy="132" r="6"/>
-    </g>
-
-    <!-- Golden mane wisps on center king -->
-    <g fill="none" stroke-linecap="round" opacity="0.92">
-        <path d="M 106 130 Q 96 128, 88 132 Q 82 136, 80 142"
-              stroke="#e8c068" stroke-width="2"/>
-        <path d="M 108 134 Q 98 138, 90 142"
-              stroke="#ffd680" stroke-width="1.5"/>
-    </g>
-
-    <!-- Foreground grass -->
-    <rect x="0" y="140" width="260" height="30" fill="#8c6428" opacity="0.50"/>
-
-    <g stroke="#d4a058" stroke-width="0.9" fill="none" opacity="0.70" stroke-linecap="round">
-        <line x1="22" y1="160" x2="24" y2="148"/>
-        <line x1="42" y1="162" x2="40" y2="148"/>
-        <line x1="218" y1="160" x2="220" y2="148"/>
-        <line x1="238" y1="162" x2="236" y2="148"/>
+    <!-- Foreground grass strip -->
+    <rect x="0" y="138" width="260" height="32" fill="#8c6428" opacity="0.50"/>
+    <g stroke="#d4a058" stroke-width="1" fill="none" opacity="0.75" stroke-linecap="round">
+        <path d="M 14 160 Q 16 148, 18 142"/>
+        <path d="M 34 162 Q 32 150, 30 142"/>
+        <path d="M 56 160 Q 58 146, 60 140"/>
+        <path d="M 82 162 Q 80 148, 78 142"/>
+        <path d="M 106 160 Q 108 146, 110 140"/>
+        <path d="M 130 162 Q 128 148, 126 142"/>
+        <path d="M 156 160 Q 158 146, 160 140"/>
+        <path d="M 180 162 Q 178 148, 176 142"/>
+        <path d="M 204 160 Q 206 146, 208 140"/>
+        <path d="M 230 162 Q 228 148, 226 142"/>
+        <path d="M 248 160 Q 250 146, 252 142"/>
     </g>
 </svg>

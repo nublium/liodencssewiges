@@ -13,9 +13,7 @@
         /* Preview-only helpers (not part of the production CSS).
            These mock up Lioden's outer layout so we can see how the
            den description box fits inside the real site. */
-        .preview-frame {
-            min-height: 100vh;
-        }
+        .preview-frame { min-height: 100vh; }
         .preview-topbar {
             background: #0c1f33;
             border-bottom: 1px solid rgba(168, 120, 56, 0.40);
@@ -63,27 +61,32 @@
             flex-direction: column;
             gap: 14px;
         }
-        /* Mock king-table for the King Animation [11] section.
-           Lioden uses table#about with tr.right > td. */
+        /* Mock king-table for the King Animation [11] section. */
         .preview-king-table {
             margin: 32px auto 0 auto;
             border-collapse: separate;
             border-spacing: 0;
         }
         .preview-king-table td {
-            padding: 18px 24px;
+            padding: 40px;
             text-align: center;
             vertical-align: middle;
         }
         .preview-king-img {
-            width: 220px;
-            height: 220px;
+            width: 240px;
+            height: 240px;
             display: block;
             margin: 0 auto;
             position: relative;
             z-index: 2;
+            border: 1px solid rgba(168, 120, 56, 0.55);
+            background: #0c1f33;
         }
-        /* Big "PREVIEW" label so we don't ship this to Lioden by mistake */
+        /* Mock chat header — replicate Lioden's real markup */
+        .preview-chat-h3 {
+            position: relative;
+            margin: 0;
+        }
         .preview-stamp {
             position: fixed;
             top: 10px;
@@ -132,6 +135,11 @@
 
 <div class="preview-stamp">★ PREVIEW ONLY ★</div>
 
+<!-- Decorative layers from the production CSS -->
+<div class="eg-nebula"></div>
+<div class="eg-shooting-star"></div>
+<div class="eg-shooting-star two"></div>
+
 <!-- ═══════════════ Mock Lioden top bar ═══════════════ -->
 <div class="container topbar preview-topbar">
     <div class="welcomeback">Welcome back, <a href="#">Ewiges</a></div>
@@ -157,20 +165,21 @@
     <div class="col-md-9 preview-main-col">
 
 
-        <!-- ════════ THE ACTUAL DEN HTML BLOCK STARTS HERE ════════
-             Everything between the markers below is the content
-             that will be pasted into the Lioden territory field. -->
+        <!-- ════════ THE ACTUAL DEN HTML BLOCK STARTS HERE ════════ -->
         <!-- ━━━━━━━━━━━━━━━━━ START DEN HTML ━━━━━━━━━━━━━━━━━ -->
 
         <div class="eg-territory">
 
+            <div class="eg-title-crown">✦ ✧ ✦ ✧ ✦</div>
             <div class="eg-title">Under the Starlit Sky&hellip;</div>
             <div class="eg-subtitle">&hellip;freedom rode the open wind.</div>
             <div class="eg-tagline">Devoted Soul &middot; Scattered &middot; Unbound</div>
+            <div class="eg-title-stars">✧ ✦ ✧</div>
 
             <!-- BOX 1 — wide lore -->
             <div class="eg-box lore">
                 <div class="eg-box-title">Pride's Lore</div>
+                <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
                 <p class="eg-leadp">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
@@ -186,10 +195,10 @@
                     deserunt mollit anim id est laborum.
                 </p>
 
-                <blockquote class="eg-pullquote">
+                <div class="eg-pullquote">
                     Freedom rode the open wind &mdash; and we rode with her,
                     devoted, scattered, unbound.
-                </blockquote>
+                </div>
 
                 <p>
                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem
@@ -200,12 +209,15 @@
 
                 <hr class="eg-divider">
 
-                <p>
+                <p class="eg-closing">
                     Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
                     odit aut fugit, sed quia consequuntur magni dolores eos qui
                     ratione voluptatem sequi nesciunt.
                 </p>
             </div>
+
+            <!-- Page-level divider -->
+            <div class="eg-page-divider"><span>✦</span></div>
 
             <!-- BOTTOM ROW — small left + medium right -->
             <div class="eg-row">
@@ -213,6 +225,7 @@
                 <!-- BOX 2 — Player Info (small left) -->
                 <div class="eg-box player">
                     <div class="eg-box-title">Player's Info</div>
+                    <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
                     <div class="eg-avatar">
                         <img src="placeholder-avatar.svg" alt="Player avatar" />
@@ -235,52 +248,51 @@
                         <span class="eg-stat-value">Open</span>
                     </div>
 
-                    <hr class="eg-divider">
-
-                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Play Style</div>
-                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                    <div class="eg-mini-title">Play Style</div>
+                    <p class="eg-mini-body">
                         Casual breeder &middot; collects rare bases &middot;
                         slow-paced &middot; chat first, trade second.
                     </p>
 
-                    <hr class="eg-divider">
-
-                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Breeding Ethics</div>
-                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                    <div class="eg-mini-title">Breeding Ethics</div>
+                    <p class="eg-mini-body">
                         Cubs are part of the pride &mdash; sent to good homes,
                         never traded harshly.
                     </p>
 
-                    <hr class="eg-divider">
-
-                    <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">Links</div>
-                    <p style="font-size:12px; line-height:1.6; margin:0;">
+                    <div class="eg-mini-title">Links</div>
+                    <p class="eg-mini-body">
                         <a href="#">Wishlist</a> &middot;
                         <a href="#">Toyhouse</a> &middot;
                         <a href="#">Forum</a>
                     </p>
                 </div>
 
-                <!-- BOX 3 — Gallery (medium right) -->
+                <!-- BOX 3 — Gallery (medium right) — symbol placeholders -->
                 <div class="eg-box gallery">
                     <div class="eg-box-title">Gallery</div>
+                    <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
                     <div class="eg-gal-grid">
                         <div class="eg-gal-card">
-                            <img src="placeholder-card-1.svg" alt="Gallery 1" />
-                            <span class="eg-gal-caption">Mngwa</span>
+                            <div class="eg-gal-img"><span>✦</span></div>
+                            <span class="eg-gal-name">Mngwa</span>
+                            <span class="eg-gal-desc">guardian of the dawn</span>
                         </div>
                         <div class="eg-gal-card">
-                            <img src="placeholder-card-2.svg" alt="Gallery 2" />
-                            <span class="eg-gal-caption">Wanderer</span>
+                            <div class="eg-gal-img"><span>☾</span></div>
+                            <span class="eg-gal-name">Wanderer</span>
+                            <span class="eg-gal-desc">soul of the open road</span>
                         </div>
                         <div class="eg-gal-card">
-                            <img src="placeholder-card-3.svg" alt="Gallery 3" />
-                            <span class="eg-gal-caption">Twilight</span>
+                            <div class="eg-gal-img"><span>⚜</span></div>
+                            <span class="eg-gal-name">Twilight</span>
+                            <span class="eg-gal-desc">first dusk, last star</span>
                         </div>
                         <div class="eg-gal-card">
-                            <img src="placeholder-card-4.svg" alt="Gallery 4" />
-                            <span class="eg-gal-caption">The Open Wind</span>
+                            <div class="eg-gal-img"><span>❋</span></div>
+                            <span class="eg-gal-name">The Open Wind</span>
+                            <span class="eg-gal-desc">a vow, a memory</span>
                         </div>
                     </div>
                 </div>
@@ -288,10 +300,8 @@
             </div><!-- /.eg-row -->
 
             <!-- Credit -->
-            <div style="text-align:center; margin-top:32px; font-family:'Cinzel', serif;
-                        font-size:9px; letter-spacing:3px; color: rgba(212, 160, 88, 0.45);
-                        text-transform: uppercase;">
-                &middot; den by <a href="#" style="color: rgba(232, 192, 104, 0.70); text-decoration: none;">nub #166079</a> &middot;
+            <div class="eg-credit">
+                den by <a href="#">nub &middot; #166079</a>
             </div>
 
         </div><!-- /.eg-territory -->
@@ -365,18 +375,33 @@
                 <p style="margin:0; font-size:12px;">&raquo; <a href="#">Territory Map</a></p>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">Chat Box</div>
-            <div class="panel-body s-chat-sidebar">
-                <div class="s-chat-msg">
-                    <a href="#">Player1</a>: A clear, starry night out there&hellip;
-                </div>
-                <div class="s-chat-msg">
-                    <a href="#">Player2</a>: Tell me about it. The wind feels alive.
-                </div>
-                <div class="s-chat-msg">
-                    <a href="#">Player3</a>: Anyone want to trade beetles?
-                </div>
+
+        <!-- Mock chat header with the EXACT Lioden markup so we can
+             preview the [8.1] flexbox fix in action. -->
+        <h3 style="position: relative;">Chat Box
+            <div style="display: inline-block; text-align: right;">
+                <input type="button" name="togglechat" value="Hide" id="btnToggleSidebarChat" />
+            </div>
+            <div style="position: absolute; right: 0; top: 0; font-size: 12px; line-height: 24px;">
+                <a href="https://www.lioden.com/chat.php">Chat Room →</a>
+            </div>
+        </h3>
+        <div id="fraSidebarChat" style="background: #213f5e; padding: 10px;">
+            <div style="display: flex; gap: 4px; padding: 6px;">
+                <button id="btnLoadNewMessages" aria-label="Load new chat messages"></button>
+                <button id="btnChatSettings" aria-label="Open settings menu"></button>
+            </div>
+            <div class="s-chat-msg">
+                <a href="#">Player1</a>: A clear, starry night out there&hellip;
+                <button class="s-chat-message_menu" aria-label="Open post menu"></button>
+            </div>
+            <div class="s-chat-msg">
+                <a href="#">Player2</a>: Tell me about it. The wind feels alive.
+                <button class="s-chat-message_menu" aria-label="Open post menu"></button>
+            </div>
+            <div class="s-chat-msg">
+                <a href="#">Player3</a>: Anyone want to trade beetles?
+                <button class="s-chat-message_menu" aria-label="Open post menu"></button>
             </div>
         </div>
     </div>

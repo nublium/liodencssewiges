@@ -63,6 +63,29 @@
     50%      { opacity: 1;    transform: scale(1.15); }
 }
 
+/* A SECOND star layer that drifts diagonally across the sky.
+   Combined with eg-twinkle on the same element you get stars
+   that both twinkle AND slowly drift — much more atmospheric. */
+@keyframes eg-star-drift {
+    0%   { background-position: 0% 0%,   0% 0%,   0% 0%,   0% 0%; }
+    100% { background-position: 4% 6%,   -3% 4%,  2% -3%,  -2% -2%; }
+}
+
+/* Faint nebulae drifting LEFT to RIGHT very slowly — adds depth */
+@keyframes eg-nebula-drift {
+    0%, 100% { transform: translateX(0)   translateY(0); }
+    50%      { transform: translateX(40px) translateY(-12px); }
+}
+
+/* Shooting star — diagonal streak crossing the page occasionally */
+@keyframes eg-shooting-star {
+    0%   { transform: translate(-10vw, 0)   rotate(20deg); opacity: 0; }
+    5%   {                                                 opacity: 1; }
+    20%  { transform: translate(60vw, 24vh) rotate(20deg); opacity: 0.8; }
+    25%  { transform: translate(80vw, 30vh) rotate(20deg); opacity: 0; }
+    100% {                                                 opacity: 0; }
+}
+
 /* Golden sparks: tiny dots that drift slowly UPWARDS, fading out.
    Used for the "Schwirrende Goldene Funken" effect across the body. */
 @keyframes eg-spark-drift {
@@ -158,9 +181,20 @@ body {
 
 /* ===== Star field overlay (decorative).
    We attach this to body::before as a pseudo-layer so the actual
-   `background` property remains clean and editable. The stars are
-   drawn with multiple radial-gradients (each gradient = one star).
-   To remove or thin them out, just delete entries from the list. */
+   `background` property remains clean and editable.
+
+   The stars are drawn as 4 SEPARATE background-image layers, each
+   covering the whole viewport. By giving each layer a different
+   background-size (e.g. 800px) and tiling it, we get a sea of stars.
+   The eg-star-drift animation moves each layer at a slightly
+   different rate → stars in different "depths" feel like they
+   parallax-drift across the sky.
+
+   On top of that the whole element pulses via eg-twinkle so the
+   stars also breathe. Two animations layered = much more alive.
+
+   To THIN OUT the stars, raise the background-size values below.
+   To ADD MORE, lower them (each tile gets denser). */
 body::before {
     content: "" !important;
     position: fixed !important;
@@ -168,36 +202,64 @@ body::before {
     pointer-events: none !important;
     z-index: 0 !important;
     background-image:
-        radial-gradient(circle 1.2px at 12% 8%,  rgba(255, 255, 240, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 22% 18%, rgba(220, 232, 255, 0.85) 50%, transparent 100%),
-        radial-gradient(circle 1.4px at 33% 4%,  rgba(255, 250, 220, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 0.9px at 47% 12%, rgba(200, 220, 250, 0.80) 50%, transparent 100%),
-        radial-gradient(circle 1.1px at 56% 22%, rgba(255, 245, 210, 0.90) 50%, transparent 100%),
-        radial-gradient(circle 0.7px at 68% 6%,  rgba(230, 240, 255, 0.85) 50%, transparent 100%),
-        radial-gradient(circle 1.3px at 78% 14%, rgba(255, 248, 215, 0.92) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 88% 24%, rgba(210, 225, 250, 0.75) 50%, transparent 100%),
-        radial-gradient(circle 1.0px at 6%  28%, rgba(255, 250, 220, 0.85) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 16% 36%, rgba(220, 235, 255, 0.75) 50%, transparent 100%),
-        radial-gradient(circle 1.2px at 29% 30%, rgba(255, 245, 210, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 0.7px at 42% 42%, rgba(200, 220, 250, 0.70) 50%, transparent 100%),
-        radial-gradient(circle 1.1px at 55% 38%, rgba(255, 248, 220, 0.90) 50%, transparent 100%),
-        radial-gradient(circle 0.9px at 65% 46%, rgba(230, 240, 255, 0.80) 50%, transparent 100%),
-        radial-gradient(circle 1.3px at 76% 32%, rgba(255, 245, 210, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 89% 44%, rgba(220, 232, 255, 0.85) 50%, transparent 100%),
-        radial-gradient(circle 1.0px at 3%  54%, rgba(255, 250, 220, 0.85) 50%, transparent 100%),
-        radial-gradient(circle 0.7px at 14% 62%, rgba(210, 225, 250, 0.75) 50%, transparent 100%),
-        radial-gradient(circle 1.2px at 27% 56%, rgba(255, 245, 210, 0.92) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 38% 70%, rgba(220, 235, 255, 0.80) 50%, transparent 100%),
-        radial-gradient(circle 1.1px at 51% 58%, rgba(255, 248, 220, 0.90) 50%, transparent 100%),
-        radial-gradient(circle 0.9px at 62% 72%, rgba(200, 220, 250, 0.75) 50%, transparent 100%),
-        radial-gradient(circle 1.3px at 74% 60%, rgba(255, 245, 210, 0.95) 50%, transparent 100%),
-        radial-gradient(circle 0.8px at 85% 70%, rgba(230, 240, 255, 0.80) 50%, transparent 100%);
-    background-size: 100% 100% !important;
-    background-repeat: no-repeat !important;
-    /* Apply the twinkle animation to the whole star layer — they
-       all twinkle in unison but at a slow, gentle rate so it's
-       not distracting. */
-    animation: eg-twinkle 6s ease-in-out infinite !important;
+        /* Layer 1 — bright "near" stars, sparse */
+        radial-gradient(1.6px 1.6px at 30px 50px,   rgba(255, 250, 220, 0.95), transparent 60%),
+        /* Layer 2 — medium stars, denser */
+        radial-gradient(1.1px 1.1px at 110px 90px,  rgba(220, 232, 255, 0.85), transparent 60%),
+        /* Layer 3 — small "far" stars, densest */
+        radial-gradient(0.9px 0.9px at 60px 200px,  rgba(255, 245, 210, 0.78), transparent 60%),
+        /* Layer 4 — micro pinpricks, almost noise */
+        radial-gradient(0.7px 0.7px at 170px 30px,  rgba(200, 220, 250, 0.70), transparent 60%);
+    background-size:
+        320px 320px,    /* near (sparse, big tile) */
+        260px 260px,    /* medium */
+        180px 180px,    /* far  */
+        140px 140px;    /* micro */
+    background-repeat: repeat, repeat, repeat, repeat !important;
+    /* Combined animation: drift slowly AND pulse the whole field.
+       Each layer drifts at a slightly different rate because the
+       keyframes give each background-position a different target. */
+    animation:
+        eg-star-drift 120s linear infinite,
+        eg-twinkle    6s   ease-in-out infinite !important;
+}
+
+/* ===== Nebula-like glow layer on top of the stars.
+   Two soft radial blooms that very slowly drift sideways. Gives
+   the sky a "milky way" feeling without being too in-your-face. */
+.eg-nebula {
+    position: fixed !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    background-image:
+        radial-gradient(ellipse 600px 200px at 30% 30%, rgba(180, 200, 230, 0.15) 0%, transparent 70%),
+        radial-gradient(ellipse 800px 240px at 70% 60%, rgba(160, 140, 200, 0.12) 0%, transparent 70%);
+    animation: eg-nebula-drift 60s ease-in-out infinite !important;
+}
+
+/* ===== A single shooting star that crosses the screen every now
+   and then. Long animation cycle (24s) with a quick visible streak
+   so it feels random and special. */
+.eg-shooting-star {
+    position: fixed !important;
+    top: 8vh !important;
+    left: 0 !important;
+    width: 80px !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 230, 160, 0.95) 50%, rgba(232, 192, 104, 0.0) 100%) !important;
+    box-shadow: 0 0 12px rgba(255, 230, 160, 0.85) !important;
+    border-radius: 2px !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    opacity: 0 !important;
+    animation: eg-shooting-star 24s ease-in infinite !important;
+    animation-delay: 6s !important;
+}
+.eg-shooting-star.two {
+    top: 22vh !important;
+    animation-delay: 18s !important;
+    animation-duration: 30s !important;
 }
 
 /* ===== Golden spark drift overlay (decorative).
@@ -378,8 +440,14 @@ select:focus, textarea:focus {
     outline: none !important;
 }
 
-/* Buttons — gold gradient like a stamped seal */
-button, .btn, input[type="submit"], input[type="button"] {
+/* Buttons — gold gradient like a stamped seal.
+   We EXCLUDE chat-box icon-buttons via :not() because those use
+   background-image SVG icons (refresh, settings, message-menu)
+   that our gradient would wipe out. */
+button:not(#btnLoadNewMessages):not(#btnChatSettings):not(.s-chat-message_menu):not(.s-chat-tooltip-icon):not(.channelSwitcher):not(#label_currentChannel):not(.chatMenu-option),
+.btn,
+input[type="submit"],
+input[type="button"]:not(#btnToggleSidebarChat) {
     background: linear-gradient(180deg, #e8c068 0%, #b88c40 100%) !important;
     color: #1a1208 !important;
     border: 1px solid #8c6428 !important;
@@ -392,39 +460,94 @@ button, .btn, input[type="submit"], input[type="button"] {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45) !important;
     transition: filter 0.2s ease, transform 0.15s ease !important;
 }
-button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover {
+button:not(#btnLoadNewMessages):not(#btnChatSettings):not(.s-chat-message_menu):hover,
+.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:not(#btnToggleSidebarChat):hover {
     filter: brightness(1.10) !important;
     transform: translateY(-1px) !important;
 }
 
 
 /* ============================================================
-   [7] CAVES + MOUNDS — the cub/lioness slot thumbnails.
+   [7] CAVES + MOUNDS — the cub/lioness slot thumbnails AND the
+       three top "organisation" banners (Unsorted, Nesting, Pride).
 
-       These show up in the right-rail "caves" section. We give
-       them gold frames so they feel consistent with the theme.
-       The placeholder banner SVGs that ship with this commission
-       are referenced in the HTML.
+       Lioden draws each slot as a div.cave-grid (cave) or div.mound-grid
+       (mound) with an <img> inside. We HIDE the default Lioden image
+       and use the matching themed SVG as the div's background-image
+       instead. Each banner type maps to its own SVG below.
+
+       ▶ To RESTORE Lioden's default images, comment out the
+         `background-image` lines for .cave-grid / .mound-grid below.
    ============================================================ */
 
-/* The container row of caves */
-.row > .col-md-3 a img {
-    border: 2px solid rgba(168, 120, 56, 0.55) !important;
+/* Frame around every cave & mound — gold border + glow on hover */
+.cave-grid, .mound-grid {
+    background: rgba(20, 40, 60, 0.55) !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    color: #f0e3b8 !important;
+    font-family: "Cinzel", serif !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 10px !important;
+    padding: 4px !important;
     border-radius: 6px !important;
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.55),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.35) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+    transition: all 0.3s ease !important;
 }
-.row > .col-md-3 a:hover img {
+.cave-grid:hover, .mound-grid:hover {
     border-color: #e8c068 !important;
     box-shadow:
-        0 4px 16px rgba(232, 192, 104, 0.45),
+        0 4px 16px rgba(232, 192, 104, 0.40),
         inset 0 0 0 1px rgba(0, 0, 0, 0.35) !important;
-    transform: translateY(-2px) !important;
+    transform: translateY(-1px) !important;
 }
 
-/* The text label under each cave */
+/* Hide the original Lioden banner images so our themed SVG shows */
+.cave-grid img, .mound-grid img { display: none !important; }
+
+/* Default cave thumbnail — used for cub/lioness slots */
+.cave-grid {
+    width: 100% !important;
+    height: 130px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-color: #0c1f33 !important;
+    background-image: url('https://nublium.github.io/liodencssewiges/placeholder-cave.svg') !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    box-sizing: border-box !important;
+    display: block !important;
+}
+/* Default mound thumbnail — used for beetle-mound rows */
+.mound-grid {
+    width: 100% !important;
+    height: 90px !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-color: #0c1f33 !important;
+    background-image: url('https://nublium.github.io/liodencssewiges/placeholder-mound.svg') !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    box-sizing: border-box !important;
+    display: block !important;
+}
+
+/* The three "organisation" banners at the top of the den page —
+   match each banner type to its themed SVG via the parent link's href. */
+a[href*="unsorted.php"]    .cave-grid {
+    background-image: url('https://nublium.github.io/liodencssewiges/placeholder-unsorted.svg') !important;
+}
+a[href*="nesting.php"]     .cave-grid,
+a[href*="nestingoverview"] .cave-grid {
+    background-image: url('https://nublium.github.io/liodencssewiges/placeholder-nesting.svg') !important;
+}
+a[href*="prideoverview"]   .cave-grid,
+a[href*="pride_overview"]  .cave-grid {
+    background-image: url('https://nublium.github.io/liodencssewiges/placeholder-pride.svg') !important;
+}
+
+/* The text label under each cave/mound — small gold caps */
 .col-md-3 a span,
 .row > .col-md-3 a + br + a {
     color: #f0e3b8 !important;
@@ -437,50 +560,307 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
 
 /* ============================================================
    [8] CHATBOX — Lioden's sidebar chat panel.
-       Lioden uses BEM-style selectors: .s-chat-sidebar, .s-chat-msg etc.
-       We dark-and-gold the whole thing so the chat lives inside the
-       night-sky theme instead of looking like Lioden's default white.
+
+       Lioden's chat is a complex little widget made of:
+         · the chat HEADER (an <h3> with "Hide" button + "Chat Room" link)
+         · the chat IFRAME (the actual messages render inside an iframe)
+         · channel switchers / settings / refresh / message-menu icons
+       Each part needs different treatment.
+
+       ★ KEY FIX ★ — the "Hide" button and the "Chat Room →" link
+       used to OVERLAP on top of each other because Lioden positions
+       one with position:absolute. We turn the h3 into a flexbox so
+       both pills sit side-by-side neatly.
    ============================================================ */
 
-/* Outer chat container */
+/* ─── [8.1] Chat header h3 — flexbox layout so toggle + link
+   don't overlap each other. */
+h3[style*="position: relative"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    padding: 8px 12px !important;
+    margin: 14px 0 0 !important;
+    background:
+        linear-gradient(180deg, rgba(168, 120, 56, 0.55) 0%, rgba(120, 84, 40, 0.55) 100%),
+        #1a3552 !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    border-bottom: none !important;
+    border-radius: 8px 8px 0 0 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 13px !important;
+    letter-spacing: 2px !important;
+    color: #f0e3b8 !important;
+    text-transform: uppercase !important;
+    line-height: 1.4 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+    overflow: visible !important;
+}
+/* The two inline-block wrappers inside the h3 — reset Lioden's
+   inline positioning so flexbox can do its job. */
+h3[style*="position: relative"] > div[style*="display: inline-block"] {
+    margin: 0 0 0 auto !important;       /* push to the right edge */
+    flex-shrink: 0 !important;
+    line-height: inherit !important;
+}
+h3[style*="position: relative"] > div[style*="position: absolute"] {
+    position: static !important;          /* ★ stop the overlap */
+    margin: 0 !important;
+    line-height: inherit !important;
+    flex-shrink: 0 !important;
+}
+
+/* ─── [8.2] "Hide" toggle button — small gold pill */
+#btnToggleSidebarChat {
+    background: rgba(168, 120, 56, 0.30) !important;
+    border: 1px solid rgba(232, 192, 104, 0.65) !important;
+    color: #f0e3b8 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 9px !important;
+    letter-spacing: 1.5px !important;
+    padding: 3px 10px !important;
+    margin: 0 !important;
+    text-transform: uppercase !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    line-height: 1.4 !important;
+    vertical-align: middle !important;
+    transition: all 0.3s ease !important;
+}
+#btnToggleSidebarChat:hover {
+    background: rgba(232, 192, 104, 0.40) !important;
+    color: #fff5d0 !important;
+    box-shadow: 0 0 8px rgba(232, 192, 104, 0.55) !important;
+}
+
+/* ─── [8.3] "Chat Room →" link — small gold pill, mirror of Hide */
+h3 a[href="./chat.php"],
+h3 a[href*="chat.php"],
+h3 a[href*="lioden.com/chat.php"] {
+    color: #f0e3b8 !important;
+    font-size: 9px !important;
+    letter-spacing: 1.5px !important;
+    font-family: "Cinzel", serif !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    padding: 3px 10px !important;
+    border: 1px solid rgba(232, 192, 104, 0.65) !important;
+    background: rgba(168, 120, 56, 0.30) !important;
+    border-radius: 10px !important;
+    line-height: 1.4 !important;
+    white-space: nowrap !important;
+    transition: all 0.3s ease !important;
+    border-bottom: 1px solid rgba(232, 192, 104, 0.65) !important;  /* override the .eg-box link dashed underline */
+}
+h3 a[href*="chat.php"]:hover {
+    color: #fff5d0 !important;
+    background: rgba(232, 192, 104, 0.40) !important;
+    box-shadow: 0 0 8px rgba(232, 192, 104, 0.55) !important;
+    text-shadow: none !important;
+    border-bottom-color: rgba(232, 192, 104, 0.85) !important;
+}
+
+/* ─── [8.4] Iframe wrapper that holds the actual chat */
+#fraSidebarChat {
+    background: #213f5e !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    border-top: none !important;
+    border-radius: 0 0 8px 8px !important;
+    margin: 0 0 14px !important;
+    padding: 0 !important;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35) !important;
+    overflow: hidden !important;
+}
+#fraSidebarChat iframe {
+    background: #213f5e !important;
+    border: none !important;
+    outline: none !important;
+    width: 100% !important;
+    display: block !important;
+}
+#fraSidebarChat.hidden { display: none !important; }
+
+/* ─── [8.5] The chat IFRAME content (renders inside its own html)
+   The iframe body has html.nolayout. Style it directly so the
+   chat doesn't show Lioden's default white background. */
+html.nolayout, html.nolayout body, body.nolayout {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: #213f5e !important;
+    color: #f0e8d0 !important;
+    box-shadow: none !important;
+}
+
+/* ─── [8.6] Chat outer container (when not in an iframe) */
 .s-chat-sidebar,
 #fra_chatContainer,
 #fra_chatContainer.s-chat-sidebar {
     background: #213f5e !important;
-    border: 1px solid rgba(168, 120, 56, 0.40) !important;
-    border-radius: 8px !important;
     color: #f0e8d0 !important;
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35) !important;
+    font-family: "Quicksand", Georgia, serif !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
 }
 
-/* Each chat message row */
+/* ─── [8.7] Channel menu bar — the row of channels (Main / RP / …) */
+.channelMenu {
+    background: linear-gradient(180deg, rgba(168, 120, 56, 0.45) 0%, rgba(120, 84, 40, 0.45) 100%) !important;
+    border-bottom: 1px solid rgba(168, 120, 56, 0.55) !important;
+    color: #f0e3b8 !important;
+}
+.chatMenu-container {
+    background: #1a3552 !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    color: #f0e8d0 !important;
+    border-radius: 8px !important;
+}
+.channelSwitcher, .chatMenu-option {
+    background: rgba(168, 120, 56, 0.20) !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    color: #f0e3b8 !important;
+    font-family: "Cinzel", serif !important;
+    text-transform: uppercase !important;
+    font-size: 10px !important;
+    letter-spacing: 1px !important;
+    text-shadow: none !important;
+    padding: 4px 8px !important;
+    border-radius: 8px !important;
+}
+.channelSwitcher.active {
+    background: linear-gradient(180deg, rgba(232, 192, 104, 0.55) 0%, rgba(168, 120, 56, 0.55) 100%) !important;
+    color: #fff5d0 !important;
+    border-color: rgba(232, 192, 104, 0.85) !important;
+}
+.channelSwitcher:hover, .chatMenu-option:hover {
+    background: rgba(232, 192, 104, 0.30) !important;
+    color: #fff5d0 !important;
+}
+
+/* ─── [8.8] PRESERVE ICON BUTTONS — refresh, settings, message-menu.
+   Lioden draws these via CSS background-images. Our generic button
+   gradient would wipe them out, so we restore the originals here. */
+#btnLoadNewMessages,
+#btnChatSettings,
+.s-chat-message_menu,
+button.s-chat-message_menu {
+    background-color: transparent !important;
+    background-image: none !important;     /* placeholder — see below */
+    border: 1px solid rgba(232, 192, 104, 0.45) !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    color: #f0e3b8 !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+    /* Each icon's actual symbol gets injected via ::before below */
+}
+#btnLoadNewMessages:hover,
+#btnChatSettings:hover,
+.s-chat-message_menu:hover {
+    background-color: rgba(232, 192, 104, 0.15) !important;
+    border-color: rgba(232, 192, 104, 0.85) !important;
+    box-shadow: 0 0 6px rgba(232, 192, 104, 0.45) !important;
+}
+
+/* Show a visible REFRESH icon (↻) since our button reset removed
+   the original SVG background. Done with a Unicode glyph + ::before. */
+#btnLoadNewMessages {
+    width: 28px !important;
+    height: 22px !important;
+    position: relative !important;
+    font-size: 0 !important;     /* hide any text the button might have */
+}
+#btnLoadNewMessages::before {
+    content: "↻" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    color: #f0e3b8 !important;
+    text-shadow: 0 0 6px rgba(232, 192, 104, 0.55) !important;
+    transition: transform 0.4s ease !important;
+}
+#btnLoadNewMessages:hover::before {
+    transform: rotate(180deg) !important;
+    color: #fff5d0 !important;
+}
+
+/* Settings (gear) button */
+#btnChatSettings {
+    width: 28px !important;
+    height: 22px !important;
+    position: relative !important;
+    font-size: 0 !important;
+}
+#btnChatSettings::before {
+    content: "⚙" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    color: #f0e3b8 !important;
+    text-shadow: 0 0 6px rgba(232, 192, 104, 0.55) !important;
+}
+
+/* Message-menu (three dots) on each chat message */
+.s-chat-message_menu {
+    width: 20px !important;
+    height: 18px !important;
+    position: relative !important;
+    font-size: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+.s-chat-message_menu::before {
+    content: "⋯" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    color: rgba(232, 192, 104, 0.65) !important;
+}
+.s-chat-message_menu:hover::before {
+    color: #f0e3b8 !important;
+}
+
+/* ─── [8.9] Each chat message row */
 .s-chat-msg, .s-chat-message {
     background: rgba(20, 45, 68, 0.55) !important;
-    border-bottom: 1px solid rgba(168, 120, 56, 0.12) !important;
+    border-bottom: 1px solid rgba(168, 120, 56, 0.18) !important;
     color: #f0e8d0 !important;
     padding: 8px 10px !important;
     transition: background 0.2s ease !important;
 }
 .s-chat-msg:hover, .s-chat-message:hover {
-    background: rgba(168, 120, 56, 0.10) !important;
+    background: rgba(168, 120, 56, 0.12) !important;
 }
 
-/* Message author (the linked username) */
+/* Username inside a chat message */
 .s-chat-msg a, .s-chat-message a {
     color: #e8c068 !important;
     font-weight: 600 !important;
     text-decoration: none !important;
+    border-bottom: none !important;     /* override .eg-box dashed underline */
 }
 .s-chat-msg a:hover, .s-chat-message a:hover {
-    color: #f0e3b8 !important;
-    text-shadow: 0 0 6px rgba(232, 192, 104, 0.55) !important;
+    color: #fff5d0 !important;
+    text-shadow: 0 0 6px rgba(232, 192, 104, 0.65) !important;
 }
 
-/* Chat input box */
+/* ─── [8.10] Chat input box */
 #txtChatMessage, .s-chat-input, textarea#txtChatMessage {
     background: #1a3552 !important;
     color: #f0e8d0 !important;
-    border: 1px solid rgba(168, 120, 56, 0.40) !important;
+    border: 1px solid rgba(168, 120, 56, 0.45) !important;
     border-radius: 4px !important;
 }
 #txtChatMessage:focus {
@@ -497,14 +877,7 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
 .s-chat-controls select, #channelSelect {
     background: #1a3552 !important;
     color: #f0e8d0 !important;
-    border: 1px solid rgba(168, 120, 56, 0.40) !important;
-}
-
-/* "HIDE" / "CHAT ROOM" buttons in the chat header */
-.s-chat-controls button, #chatHide, #chatRoom {
-    background: linear-gradient(180deg, #e8c068 0%, #b88c40 100%) !important;
-    color: #1a1208 !important;
-    border: 1px solid #8c6428 !important;
+    border: 1px solid rgba(168, 120, 56, 0.45) !important;
 }
 
 /* Emoji picker / smiley row */
@@ -551,12 +924,34 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
 }
 
 /* ─── TITLE BLOCK ─────────────────────────────────────────────
-   "Under the starlit sky…"  →  the main title
-   "...freedom rode the open wind."  →  italic subtitle
-   "Devoted Soul, Scattered, Unbound"  →  tagline beneath
+   "Under the starlit sky…"  →  the main title (with star flanks)
+   "...freedom rode the open wind."  →  italic subtitle (gold rule)
+   "Devoted Soul, Scattered, Unbound"  →  tagline beneath (constellation)
    ────────────────────────────────────────────────────────── */
-.eg-territory .eg-title {
+
+/* A decorative line of constellation symbols ABOVE the title.
+   Drawn purely with CSS so you can copy/paste it elsewhere. */
+.eg-title-crown {
     display: block !important;
+    text-align: center !important;
+    margin: 0 0 14px 0 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 16px !important;
+    letter-spacing: 18px !important;
+    color: #e8c068 !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.65),
+        0 0 28px rgba(212, 160, 88, 0.35) !important;
+    line-height: 1 !important;
+    padding-left: 18px !important;  /* compensate letter-spacing for centring */
+}
+
+/* The TITLE itself — Cinzel caps, breathing glow, flanked by stars */
+.eg-territory .eg-title {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 24px !important;
     font-family: "Cinzel", serif !important;
     font-weight: 600 !important;
     font-size: 54px !important;
@@ -570,12 +965,34 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
     /* The breathing glow animation — slow and gentle. */
     animation: eg-title-breathe 8s ease-in-out infinite !important;
     text-shadow:
-        0 0 24px rgba(232, 192, 104, 0.55),
-        0 0 48px rgba(212, 160, 88, 0.30),
-        0 2px 4px rgba(0, 0, 0, 0.65) !important;
+        0 0 24px rgba(232, 192, 104, 0.65),
+        0 0 48px rgba(212, 160, 88, 0.35),
+        0 0 80px rgba(168, 120, 56, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.75) !important;
+    position: relative !important;
+}
+/* Star ornaments flanking the title text — six-point gold stars
+   that spin VERY slowly. Pure decoration. */
+.eg-territory .eg-title::before,
+.eg-territory .eg-title::after {
+    content: "✦" !important;
+    flex-shrink: 0 !important;
+    font-size: 28px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0 !important;
+    color: #e8c068 !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.85),
+        0 0 28px rgba(255, 215, 130, 0.45) !important;
+    animation: eg-mane-glow 4s ease-in-out infinite !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+}
+.eg-territory .eg-title::after {
+    animation-delay: 2s !important;   /* offset so they don't pulse together */
 }
 
-/* Italic subtitle directly under the title */
+/* Italic subtitle directly under the title — flanked by a small star */
 .eg-territory .eg-subtitle {
     display: block !important;
     font-family: "Cormorant Garamond", serif !important;
@@ -584,65 +1001,193 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
     font-size: 22px !important;
     line-height: 1.4 !important;
     text-align: center !important;
-    color: #e8c068 !important;
-    margin: 0 0 16px 0 !important;
-    letter-spacing: 1px !important;
-    text-shadow: 0 0 12px rgba(232, 192, 104, 0.35), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+    color: #f0e3b8 !important;
+    margin: 0 0 18px 0 !important;
+    letter-spacing: 1.2px !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.55),
+        0 0 28px rgba(212, 160, 88, 0.25),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
+    position: relative !important;
+}
+/* Thin gold horizontal rules with a star in the middle, ABOVE & BELOW */
+.eg-territory .eg-subtitle::before {
+    content: "" !important;
+    display: block !important;
+    margin: 0 auto 12px auto !important;
+    width: 200px !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.55) 20%, rgba(232, 192, 104, 0.85) 50%, rgba(168, 120, 56, 0.55) 80%, transparent 100%) !important;
 }
 
-/* Tagline — small, all-caps, gold, with little ornament bars */
+/* Tagline — small, all-caps, gold, with a STAR-bracketed flourish */
 .eg-territory .eg-tagline {
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
     font-family: "Cinzel", serif !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     font-size: 11px !important;
     text-align: center !important;
-    color: #d4a058 !important;
-    margin: 0 auto 36px auto !important;
+    color: #e8c068 !important;
+    margin: 0 auto 12px auto !important;
     letter-spacing: 3px !important;
     text-transform: uppercase !important;
     position: relative !important;
+    text-shadow: 0 0 10px rgba(232, 192, 104, 0.55), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
 }
-/* Decorative gold bar before & after the tagline ⸻ ⸻ */
+/* Long ornate gold rules either side, ending in a small star */
 .eg-territory .eg-tagline::before,
 .eg-territory .eg-tagline::after {
-    content: "" !important;
-    display: inline-block !important;
-    width: 40px !important;
-    height: 1px !important;
-    vertical-align: middle !important;
-    margin: 0 14px !important;
-    background: linear-gradient(90deg, transparent, #d4a058, transparent) !important;
+    content: "✧" !important;
+    flex: 0 0 80px !important;
+    height: 14px !important;
+    line-height: 14px !important;
+    color: #d4a058 !important;
+    font-size: 12px !important;
+    text-align: center !important;
+    position: relative !important;
+}
+.eg-territory .eg-tagline::before {
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.65) 80%, transparent 100%) !important;
+    -webkit-mask:
+        linear-gradient(#000, #000) center/100% 1px no-repeat,
+        radial-gradient(circle, #000 4px, transparent 5px) right center/14px 14px no-repeat !important;
+            mask:
+        linear-gradient(#000, #000) center/100% 1px no-repeat,
+        radial-gradient(circle, #000 4px, transparent 5px) right center/14px 14px no-repeat !important;
+    color: transparent !important;  /* hide the ✧ on this side, line only */
+    background-color: #d4a058 !important;
+}
+.eg-territory .eg-tagline::after {
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.65) 80%, transparent 100%) !important;
+    -webkit-mask:
+        linear-gradient(#000, #000) center/100% 1px no-repeat,
+        radial-gradient(circle, #000 4px, transparent 5px) left center/14px 14px no-repeat !important;
+            mask:
+        linear-gradient(#000, #000) center/100% 1px no-repeat,
+        radial-gradient(circle, #000 4px, transparent 5px) left center/14px 14px no-repeat !important;
+    color: transparent !important;
+    background-color: #d4a058 !important;
+    transform: scaleX(-1) !important;   /* mirror so the star sits on the right side */
+}
+
+/* Constellation row directly under the tagline — three stars
+   spaced wide. Adds an extra layer of decoration. */
+.eg-title-stars {
+    display: block !important;
+    text-align: center !important;
+    margin: 0 auto 36px auto !important;
+    font-size: 10px !important;
+    color: rgba(212, 160, 88, 0.85) !important;
+    letter-spacing: 24px !important;
+    padding-left: 24px !important;   /* compensate the trailing letter-spacing */
+    text-shadow: 0 0 10px rgba(232, 192, 104, 0.55) !important;
+}
+
+/* ── CREDIT footer ──
+   A small line at the very bottom of the den, crediting the
+   designer. Lift it from "barely visible" to "subtle but clear". */
+.eg-credit {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    text-align: center !important;
+    margin: 36px auto 0 auto !important;
+    padding: 16px 0 !important;
+    max-width: 480px !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 10px !important;
+    letter-spacing: 2.5px !important;
+    text-transform: uppercase !important;
+    color: rgba(232, 192, 104, 0.85) !important;
+    text-shadow: 0 0 8px rgba(232, 192, 104, 0.45), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+    border-top: 1px solid rgba(168, 120, 56, 0.40) !important;
+    border-bottom: 1px solid rgba(168, 120, 56, 0.40) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+.eg-credit::before,
+.eg-credit::after {
+    content: "✧" !important;
+    color: rgba(212, 160, 88, 0.85) !important;
+    font-size: 11px !important;
+    flex-shrink: 0 !important;
+}
+.eg-credit a {
+    color: #f0e3b8 !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 2.5px !important;
+    border-bottom: 1px dashed rgba(232, 192, 104, 0.55) !important;
+    padding-bottom: 1px !important;
+    transition: color 0.2s ease, text-shadow 0.2s ease !important;
+}
+.eg-credit a:hover {
+    color: #fff5d0 !important;
+    text-shadow: 0 0 10px rgba(255, 215, 130, 0.85) !important;
+    border-bottom-color: #ffd680 !important;
 }
 
 /* ─── SHARED BOX BASE ─────────────────────────────────────────
    All three boxes share this look: dark navy face, gold border,
-   subtle inner glow, generous padding. */
+   inner second-line frame, four little corner ornaments, plus a
+   centred decorative title. */
 .eg-box {
-    background: rgba(20, 40, 60, 0.78) !important;
-    border: 1px solid rgba(168, 120, 56, 0.50) !important;
+    background: rgba(20, 40, 60, 0.82) !important;
+    border: 1px solid rgba(168, 120, 56, 0.55) !important;
     border-radius: 4px !important;
-    padding: 28px 30px !important;
+    padding: 36px 34px 32px 34px !important;
     margin: 0 !important;
     color: #f0e8d0 !important;
     position: relative !important;
     box-shadow:
         0 4px 24px rgba(0, 0, 0, 0.55),
-        inset 0 0 24px rgba(168, 120, 56, 0.06) !important;
-    /* The inner gold "second-line" frame — drawn via ::before */
+        inset 0 0 28px rgba(168, 120, 56, 0.10) !important;
 }
+
+/* INNER second-line frame — gives every box the "double border"
+   library-book feel. */
 .eg-box::before {
     content: "" !important;
     position: absolute !important;
-    inset: 6px !important;
-    border: 1px solid rgba(168, 120, 56, 0.20) !important;
+    inset: 7px !important;
+    border: 1px solid rgba(168, 120, 56, 0.30) !important;
     border-radius: 2px !important;
     pointer-events: none !important;
 }
 
-/* Each box's header — small gold caps with a centred ornament */
+/* Four CORNER ORNAMENTS — gold star markers sitting just inside
+   each corner of the box. Built from a single ::after with a
+   complex background-image (4 stars positioned via CSS gradients). */
+.eg-box::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    background-image:
+        radial-gradient(circle 2.5px at 14px 14px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at calc(100% - 14px) 14px,
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at 14px calc(100% - 14px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%),
+        radial-gradient(circle 2.5px at calc(100% - 14px) calc(100% - 14px),
+            rgba(232, 192, 104, 0.95) 50%, transparent 100%);
+    background-repeat: no-repeat !important;
+    border-radius: 4px !important;
+}
+
+/* Each box's header — small gold caps with a constellation row
+   underneath. Wrapped in a flex container so we can flank it
+   with horizontal gold rules. */
 .eg-box .eg-box-title {
-    display: block !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 14px !important;
     font-family: "Cinzel", serif !important;
     font-weight: 600 !important;
     font-size: 16px !important;
@@ -650,19 +1195,45 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
     text-transform: uppercase !important;
     letter-spacing: 4px !important;
     text-align: center !important;
-    margin: 0 0 18px 0 !important;
+    margin: 0 0 22px 0 !important;
     position: relative !important;
     z-index: 1 !important;
-    text-shadow: 0 0 10px rgba(232, 192, 104, 0.45), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+    text-shadow:
+        0 0 12px rgba(232, 192, 104, 0.65),
+        0 0 24px rgba(212, 160, 88, 0.35),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
 }
-/* Tiny ornament under each box title ・ */
+/* Decorative gold rules with an inset star, left & right of title */
+.eg-box .eg-box-title::before,
 .eg-box .eg-box-title::after {
-    content: "✦" !important;
+    content: "✧" !important;
+    flex: 0 0 56px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    color: rgba(212, 160, 88, 0.95) !important;
+    letter-spacing: 0 !important;
+    position: relative !important;
+    /* horizontal hairline through the star */
+    background:
+        linear-gradient(90deg,
+            transparent 0%,
+            rgba(168, 120, 56, 0.65) 20%,
+            rgba(232, 192, 104, 0.85) 50%,
+            rgba(168, 120, 56, 0.65) 80%,
+            transparent 100%) center / 100% 1px no-repeat !important;
+    text-align: center !important;
+    text-shadow: 0 0 8px rgba(232, 192, 104, 0.65) !important;
+}
+
+/* Small ornament UNDER each box title — three small stars */
+.eg-box .eg-box-title-sub {
     display: block !important;
-    margin: 6px auto 0 auto !important;
-    color: #d4a058 !important;
-    font-size: 10px !important;
-    opacity: 0.85 !important;
+    text-align: center !important;
+    margin: -10px auto 22px auto !important;
+    color: rgba(212, 160, 88, 0.65) !important;
+    font-size: 8px !important;
+    letter-spacing: 14px !important;
+    padding-left: 14px !important;     /* offset for trailing letter-spacing */
 }
 
 /* ─── LAYOUT ROWS ─────────────────────────────────────────────
@@ -688,24 +1259,77 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
     flex: 0 1 35% !important;
     min-height: 320px !important;
 }
+/* Stat row: flexbox so the label sits LEFT and the value RIGHT,
+   with a dashed gold underline between rows. */
 .eg-box.player .eg-stat-row {
     display: flex !important;
+    align-items: baseline !important;
     justify-content: space-between !important;
-    border-bottom: 1px dashed rgba(168, 120, 56, 0.25) !important;
-    padding: 6px 0 !important;
+    gap: 10px !important;
+    border-bottom: 1px dashed rgba(168, 120, 56, 0.30) !important;
+    padding: 7px 0 !important;
     font-size: 13px !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 .eg-box.player .eg-stat-row:last-child { border-bottom: 0 !important; }
+/* LEFT-aligned gold label */
 .eg-box.player .eg-stat-label {
+    flex: 0 0 auto !important;
+    text-align: left !important;
     color: #d4a058 !important;
     font-family: "Cinzel", serif !important;
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
     font-size: 11px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
 }
+/* RIGHT-aligned cream value */
 .eg-box.player .eg-stat-value {
-    color: #f0e8d0 !important;
+    flex: 1 1 auto !important;
     text-align: right !important;
+    color: #f0e8d0 !important;
+    font-family: "Quicksand", sans-serif !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Sub-section heading inside the Player box (Play Style, Links, etc.)
+   Uses the same flex-flanked layout as box title but smaller. */
+.eg-box.player .eg-mini-title {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    margin: 18px 0 10px 0 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 11px !important;
+    color: #e8c068 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2.5px !important;
+    text-shadow: 0 0 8px rgba(232, 192, 104, 0.45) !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+.eg-box.player .eg-mini-title::before,
+.eg-box.player .eg-mini-title::after {
+    content: "" !important;
+    flex: 1 1 auto !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.65) 100%) !important;
+}
+.eg-box.player .eg-mini-title::after {
+    background: linear-gradient(90deg, rgba(168, 120, 56, 0.65) 0%, transparent 100%) !important;
+}
+
+/* Short paragraph inside Play Style / Breeding Ethics / Links */
+.eg-box.player .eg-mini-body {
+    font-family: "Quicksand", sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    color: #f0e8d0 !important;
+    margin: 0 !important;
+    text-align: left !important;
 }
 
 /* Box 3 — medium gallery on the RIGHT (about 65% wide) */
@@ -716,72 +1340,210 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
 
 /* ─── TEXT ELEMENTS INSIDE BOXES ─────────────────────────────
    These are the small style tokens the customer can drop into
-   their lore: pull-quote, divider, drop-cap … */
+   their lore: pull-quote, divider, drop-cap, closing paragraph,
+   tag pills … */
 .eg-box p {
     margin: 0 0 14px 0 !important;
     text-align: justify !important;
     hyphens: auto !important;
+    position: relative !important;
+    z-index: 1 !important;          /* sit above the ::after corner ornaments */
 }
 .eg-box p:last-child { margin-bottom: 0 !important; }
 
-/* Pull-quote — a highlighted callout inside the lore */
-.eg-pullquote {
+/* Pull-quote — a highlighted callout inside the lore.
+   Works on EITHER <blockquote class="eg-pullquote"> OR
+   <div class="eg-pullquote">.  We reset blockquote-specific
+   margins so both behave identically.  */
+.eg-pullquote,
+blockquote.eg-pullquote {
     display: block !important;
-    margin: 24px auto !important;
-    padding: 16px 28px !important;
-    max-width: 84% !important;
+    margin: 28px auto !important;
+    padding: 26px 36px 22px 36px !important;
+    max-width: 86% !important;
     font-family: "Cormorant Garamond", serif !important;
     font-style: italic !important;
-    font-size: 18px !important;
-    line-height: 1.5 !important;
-    color: #f0e3b8 !important;
+    font-weight: 500 !important;
+    font-size: 19px !important;
+    line-height: 1.55 !important;
+    color: #f5e5b8 !important;
     text-align: center !important;
-    border-top: 1px solid rgba(168, 120, 56, 0.45) !important;
-    border-bottom: 1px solid rgba(168, 120, 56, 0.45) !important;
-    background: rgba(168, 120, 56, 0.05) !important;
-    text-shadow: 0 0 14px rgba(232, 192, 104, 0.30) !important;
+    background:
+        linear-gradient(180deg,
+            rgba(168, 120, 56, 0.10) 0%,
+            rgba(168, 120, 56, 0.18) 50%,
+            rgba(168, 120, 56, 0.10) 100%) !important;
+    border-top: 1px solid rgba(232, 192, 104, 0.55) !important;
+    border-bottom: 1px solid rgba(232, 192, 104, 0.55) !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.55),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
     position: relative !important;
+    z-index: 1 !important;
+    quotes: "\201C" "\201D" !important;
+    text-indent: 0 !important;
 }
-/* Decorative quote-marks */
-.eg-pullquote::before {
+/* Big decorative opening quote — top-left, absolutely positioned */
+.eg-pullquote::before,
+blockquote.eg-pullquote::before {
     content: "\201C" !important;
-    color: #d4a058 !important;
+    position: absolute !important;
+    top: -6px !important;
+    left: 8px !important;
+    color: rgba(232, 192, 104, 0.85) !important;
     font-family: "Cormorant Garamond", serif !important;
-    font-size: 36px !important;
-    line-height: 0 !important;
-    vertical-align: -10px !important;
-    margin-right: 6px !important;
+    font-size: 52px !important;
+    font-style: normal !important;
+    line-height: 1 !important;
+    text-shadow: 0 0 14px rgba(232, 192, 104, 0.55) !important;
 }
-.eg-pullquote::after {
+/* Big decorative closing quote — bottom-right, absolutely positioned */
+.eg-pullquote::after,
+blockquote.eg-pullquote::after {
     content: "\201D" !important;
-    color: #d4a058 !important;
+    position: absolute !important;
+    bottom: -22px !important;
+    right: 12px !important;
+    color: rgba(232, 192, 104, 0.85) !important;
     font-family: "Cormorant Garamond", serif !important;
-    font-size: 36px !important;
-    line-height: 0 !important;
-    vertical-align: -20px !important;
-    margin-left: 6px !important;
+    font-size: 52px !important;
+    font-style: normal !important;
+    line-height: 1 !important;
+    text-shadow: 0 0 14px rgba(232, 192, 104, 0.55) !important;
 }
 
-/* Thin gold divider — use <hr class="eg-divider"> to add one */
+/* Thin gold INLINE divider — use <hr class="eg-divider"> inside a box */
 .eg-divider {
     border: 0 !important;
     height: 1px !important;
-    background: linear-gradient(90deg, transparent, rgba(168, 120, 56, 0.65), transparent) !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.65) 35%, rgba(232, 192, 104, 0.85) 50%, rgba(168, 120, 56, 0.65) 65%, transparent 100%) !important;
     margin: 22px auto !important;
     width: 70% !important;
 }
 
+/* ── PAGE-LEVEL DIVIDER ──
+   For separating major sections OUTSIDE the boxes (between the
+   title and the lore, between boxes, etc.). More ornate than
+   the inline divider — central star, gold rules either side. */
+.eg-page-divider {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 18px !important;
+    margin: 32px auto !important;
+    max-width: 600px !important;
+    color: #d4a058 !important;
+}
+.eg-page-divider::before,
+.eg-page-divider::after {
+    content: "" !important;
+    flex: 1 1 auto !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent 0%, rgba(168, 120, 56, 0.85) 100%) !important;
+}
+.eg-page-divider::after {
+    background: linear-gradient(90deg, rgba(168, 120, 56, 0.85) 0%, transparent 100%) !important;
+}
+.eg-page-divider > span {
+    display: inline-block !important;
+    color: #e8c068 !important;
+    font-size: 18px !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.85),
+        0 0 28px rgba(255, 215, 130, 0.45) !important;
+    animation: eg-mane-glow 4s ease-in-out infinite !important;
+}
+
 /* Drop-cap — first letter of the lore styled extra-large.
-   Apply with <p class="eg-leadp">…</p> on the FIRST paragraph. */
-.eg-leadp::first-letter {
-    font-family: "Cinzel", serif !important;
-    font-size: 48px !important;
+   Apply with <p class="eg-leadp">…</p> on the FIRST paragraph.
+
+   We use display: block + first-letter so it survives even when
+   the paragraph is justified or right-aligned.  */
+.eg-box .eg-leadp,
+p.eg-leadp {
+    text-align: left !important;     /* drop-cap doesn't play nice with justify */
+    overflow: hidden !important;     /* clear the float */
+}
+.eg-box .eg-leadp::first-letter,
+p.eg-leadp::first-letter {
+    font-family: "Cinzel", "Cormorant Garamond", serif !important;
+    font-size: 64px !important;
     font-weight: 700 !important;
     float: left !important;
-    line-height: 0.85 !important;
-    padding: 6px 10px 0 0 !important;
+    line-height: 0.80 !important;
+    padding: 8px 12px 2px 0 !important;
+    margin-right: 4px !important;
     color: #e8c068 !important;
-    text-shadow: 0 0 12px rgba(232, 192, 104, 0.45) !important;
+    text-shadow:
+        0 0 18px rgba(232, 192, 104, 0.75),
+        0 0 34px rgba(212, 160, 88, 0.45),
+        0 2px 4px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* ── CLOSING PARAGRAPH ──
+   A special style for the final paragraph of the lore — italic,
+   centred, slightly larger, with a star above and below.
+   Apply with <p class="eg-closing">…</p>. */
+.eg-closing {
+    display: block !important;
+    margin: 28px auto 8px auto !important;
+    max-width: 80% !important;
+    text-align: center !important;
+    font-family: "Cormorant Garamond", serif !important;
+    font-style: italic !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    color: #f5e5b8 !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.55),
+        0 1px 2px rgba(0, 0, 0, 0.75) !important;
+    position: relative !important;
+    padding: 24px 0 !important;
+    z-index: 1 !important;
+}
+/* Star ornament above the closing paragraph */
+.eg-closing::before {
+    content: "✦" !important;
+    display: block !important;
+    margin: 0 auto 16px auto !important;
+    color: #e8c068 !important;
+    font-size: 18px !important;
+    text-shadow:
+        0 0 14px rgba(232, 192, 104, 0.85),
+        0 0 28px rgba(255, 215, 130, 0.45) !important;
+    animation: eg-mane-glow 4s ease-in-out infinite !important;
+}
+/* Three little stars under the closing paragraph (constellation) */
+.eg-closing::after {
+    content: "✧ ✦ ✧" !important;
+    display: block !important;
+    margin: 14px auto 0 auto !important;
+    color: rgba(212, 160, 88, 0.85) !important;
+    font-size: 10px !important;
+    letter-spacing: 12px !important;
+    padding-left: 12px !important;
+}
+
+/* ── LINKS inside the lore / player-info / gallery content ──
+   Gold underline that "lights up" on hover. Distinct enough that
+   players see they're clickable. */
+.eg-box a,
+.eg-territory .eg-closing a,
+.eg-territory .eg-credit a {
+    color: #f0d480 !important;
+    text-decoration: none !important;
+    border-bottom: 1px dashed rgba(232, 192, 104, 0.55) !important;
+    padding-bottom: 1px !important;
+    transition: color 0.2s ease, border-color 0.2s ease, text-shadow 0.2s ease, background 0.2s ease !important;
+}
+.eg-box a:hover,
+.eg-territory .eg-closing a:hover,
+.eg-territory .eg-credit a:hover {
+    color: #fff5d0 !important;
+    border-bottom-color: #ffd680 !important;
+    text-shadow: 0 0 10px rgba(255, 215, 130, 0.85) !important;
+    background: rgba(232, 192, 104, 0.08) !important;
 }
 
 /* Optional tag chip — small gold-bordered label, used for member
@@ -790,71 +1552,162 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
     display: inline-block !important;
     padding: 3px 10px !important;
     margin: 4px 4px !important;
-    background: rgba(168, 120, 56, 0.15) !important;
-    border: 1px solid rgba(168, 120, 56, 0.55) !important;
+    background: rgba(168, 120, 56, 0.18) !important;
+    border: 1px solid rgba(168, 120, 56, 0.65) !important;
     border-radius: 999px !important;
-    color: #e8c068 !important;
+    color: #f0e3b8 !important;
     font-family: "Cinzel", serif !important;
     font-size: 10px !important;
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
+    text-shadow: 0 0 8px rgba(232, 192, 104, 0.45) !important;
 }
 
 
 /* ============================================================
    [10] GALLERY (.eg-gal-*) — character / art cards inside the
-        bottom-right gallery box. Designed for 2 or 3 cards per row.
+        bottom-right gallery box. Designed for 2 cards per row.
 
-        Each card is a non-circle thumbnail (per customer request)
-        with a small caption below.
+        EACH CARD is just a gold-bordered rectangle with a soft
+        navy → gold radial gradient and a SINGLE SYMBOL in the
+        middle (a star, a moon, a fleur — whatever fits). The
+        customer can later replace the symbol with a real <img>
+        once they have art.
+
+        ▶ How to add a card with a CUSTOM SYMBOL:
+            <div class="eg-gal-card">
+                <div class="eg-gal-img">
+                    <span>✦</span>     ← any single character / emoji
+                </div>
+                <span class="eg-gal-name">CHARACTER NAME</span>
+                <span class="eg-gal-desc">short descriptor</span>
+            </div>
+
+        ▶ How to add a card with a REAL IMAGE:
+            replace the inner <div class="eg-gal-img"> with:
+                <img class="eg-gal-img" src="..." alt="..." />
    ============================================================ */
 .eg-gal-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 14px !important;
     margin-top: 8px !important;
+    position: relative !important;
+    z-index: 1 !important;
 }
 
-/* Each gallery card */
+/* Each gallery card — the outer card frame */
 .eg-gal-card {
     background: rgba(0, 0, 0, 0.30) !important;
-    border: 1px solid rgba(168, 120, 56, 0.40) !important;
+    border: 1px solid rgba(168, 120, 56, 0.45) !important;
     border-radius: 4px !important;
-    padding: 8px !important;
+    padding: 10px 10px 12px 10px !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
     position: relative !important;
+    text-align: center !important;
 }
 .eg-gal-card:hover {
     transform: translateY(-3px) !important;
     border-color: #e8c068 !important;
-    box-shadow: 0 6px 18px rgba(232, 192, 104, 0.30) !important;
+    box-shadow:
+        0 6px 18px rgba(232, 192, 104, 0.35),
+        0 0 24px rgba(232, 192, 104, 0.15) inset !important;
 }
 
-/* The thumbnail image / SVG itself — rectangular (NOT a circle,
-   per the customer's preference) with soft gold corners */
-.eg-gal-card img,
-.eg-gal-card svg {
-    display: block !important;
+/* The IMAGE / SYMBOL area — 4:3 rectangle, gold-bordered, with a
+   soft navy→gold radial gradient backdrop. Works for both <div>
+   and <img> children. */
+.eg-gal-card .eg-gal-img,
+.eg-gal-card > img.eg-gal-img,
+.eg-gal-card > img:not([class]) {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 100% !important;
+    aspect-ratio: 4 / 3 !important;
     height: auto !important;
-    aspect-ratio: 4/3 !important;
-    object-fit: cover !important;
+    border: 1px solid rgba(168, 120, 56, 0.40) !important;
     border-radius: 3px !important;
-    border: 1px solid rgba(168, 120, 56, 0.30) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background:
+        radial-gradient(ellipse at 50% 35%, rgba(180, 200, 230, 0.20) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 90%, rgba(232, 192, 104, 0.30) 0%, transparent 65%),
+        radial-gradient(circle 1.2px at 18px 22px, rgba(255, 245, 220, 0.95), transparent 60%),
+        radial-gradient(circle 1px at 80px 16px,  rgba(220, 232, 255, 0.85), transparent 60%),
+        radial-gradient(circle 0.9px at 130px 32px, rgba(255, 245, 220, 0.85), transparent 60%),
+        radial-gradient(circle 1.1px at 200px 20px, rgba(220, 232, 255, 0.90), transparent 60%),
+        radial-gradient(circle 0.8px at 50px 50px,  rgba(255, 245, 220, 0.75), transparent 60%),
+        radial-gradient(circle 1px at 160px 60px, rgba(220, 232, 255, 0.80), transparent 60%),
+        linear-gradient(180deg, #0c1f33 0%, #142d44 60%, #1a3552 100%) !important;
 }
 
-/* Caption under each card — small gold caps */
+/* If the customer uses a real <img>, treat it like a normal image */
+.eg-gal-card > img {
+    object-fit: cover !important;
+}
+/* For the placeholder div, the inner <span> holds the SYMBOL */
+.eg-gal-card .eg-gal-img > span {
+    font-family: "Cinzel", "Cormorant Garamond", serif !important;
+    font-size: 56px !important;
+    line-height: 1 !important;
+    color: #e8c068 !important;
+    text-shadow:
+        0 0 18px rgba(232, 192, 104, 0.85),
+        0 0 36px rgba(255, 215, 130, 0.55),
+        0 2px 4px rgba(0, 0, 0, 0.65) !important;
+    transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+.eg-gal-card:hover .eg-gal-img > span {
+    color: #f5e5b8 !important;
+    transform: scale(1.08) !important;
+    text-shadow:
+        0 0 24px rgba(255, 230, 160, 0.95),
+        0 0 48px rgba(255, 215, 130, 0.75),
+        0 2px 4px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Card NAME — large-ish Cinzel caps, gold */
+.eg-gal-name {
+    display: block !important;
+    margin-top: 10px !important;
+    margin-bottom: 2px !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 12px !important;
+    color: #f0e3b8 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    text-shadow: 0 0 8px rgba(232, 192, 104, 0.45), 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+    line-height: 1.2 !important;
+}
+.eg-gal-card:hover .eg-gal-name {
+    color: #fff5d0 !important;
+}
+
+/* Card DESCRIPTOR — small italic caption underneath the name */
+.eg-gal-desc {
+    display: block !important;
+    margin-top: 2px !important;
+    font-family: "Cormorant Garamond", serif !important;
+    font-style: italic !important;
+    font-size: 11px !important;
+    color: rgba(212, 160, 88, 0.85) !important;
+    line-height: 1.3 !important;
+}
+
+/* ── Legacy caption support — back-compat for the old class name */
 .eg-gal-caption {
     display: block !important;
-    text-align: center !important;
-    margin-top: 8px !important;
+    margin-top: 10px !important;
     font-family: "Cinzel", serif !important;
-    font-size: 10px !important;
+    font-size: 11px !important;
     color: #d4a058 !important;
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
 }
-.eg-gal-card:hover .eg-gal-caption { color: #f0e3b8 !important; }
+.eg-gal-card:hover .eg-gal-caption { color: #f5e5b8 !important; }
 
 /* Avatar slot inside the Player's Info box — NOT a circle.
    The customer specifically requested no circle. We use a
@@ -891,104 +1744,165 @@ button:hover, .btn:hover, input[type="submit"]:hover, input[type="button"]:hover
 
 
 /* ============================================================
-   [11] KING ANIMATION — the golden mane wisps that stream back
-        from the king's lion portrait.
+   [11] KING ANIMATION — golden halo + mane wisps + starfield
+        flowing around the king's portrait.
 
-        Lioden injects the king image into a specific table cell:
+        Lioden displays the king as a SQUARE/RECTANGULAR image
+        inside a specific table cell:
             <table id="about"> → <tr class="right"> → <td>
-        We attach our wisp + glow effects to that cell via ::before
-        and ::after so we don't have to modify Lioden's HTML.
+        We attach our effects to that cell via pseudo-elements so
+        we never have to touch Lioden's HTML.
 
-        Three layers stack around the king:
-          ① a slow-pulsing golden HALO behind him (eg-mane-glow)
-          ② two streaks of MANE WISPS flowing rightward
-          ③ a soft inner star-glow circle just inside the halo
+        FOUR layers stack around the king now (was 3 before):
+          ① a HUGE pulsing golden HALO behind him (bigger than before)
+          ② a SECONDARY inner halo with a warm sun-glow
+          ③ streaks of MANE WISPS flowing to the right
+          ④ a sparkle cloud — small gold pinpricks twinkling around him
+
+        The wisp positions assume a roughly 220-300px square king
+        image. If you want to push the wisps further from the king,
+        increase the `width` of the wisp ::after.
    ============================================================ */
 
-/* The king cell: make positioning context for the effect layers */
-table#about > tbody > tr.right > td:first-child {
+/* The row positioning anchor */
+table#about > tbody > tr.right {
     position: relative !important;
-    overflow: visible !important;        /* let the wisps escape */
-    z-index: 1 !important;
 }
 
-/* ① The big golden halo behind the king — radial pulse */
+/* The king CELL — positioning context, allow overflow */
+table#about > tbody > tr.right > td:first-child {
+    position: relative !important;
+    overflow: visible !important;
+    z-index: 1 !important;
+    padding: 40px !important;            /* breathing room for the halo */
+}
+
+/* ① OUTER HALO — much larger and brighter than before */
 table#about > tbody > tr.right > td:first-child::before {
     content: "" !important;
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    width: 280px !important;
-    height: 280px !important;
+    width: 480px !important;
+    height: 480px !important;
     border-radius: 50% !important;
     background: radial-gradient(
         circle at 50% 50%,
-        rgba(232, 192, 104, 0.55) 0%,
-        rgba(212, 160, 88, 0.32) 30%,
-        rgba(168, 120, 56, 0.15) 55%,
-        transparent 75%
+        rgba(255, 215, 130, 0.55) 0%,
+        rgba(232, 192, 104, 0.45) 18%,
+        rgba(212, 160, 88, 0.28) 38%,
+        rgba(168, 120, 56, 0.12) 60%,
+        transparent 80%
     ) !important;
     transform: translate(-50%, -50%) !important;
-    animation: eg-mane-glow 5s ease-in-out infinite !important;
+    animation: eg-mane-glow 4s ease-in-out infinite !important;
     pointer-events: none !important;
-    z-index: -1 !important;
-    filter: blur(2px) !important;
+    z-index: -2 !important;
+    filter: blur(3px) !important;
 }
 
-/* ② Mane wisps — two streaks of golden light flowing rightward.
-   The streaks are linear gradients on a wide, thin element.
-   Different animation delays so they overlap softly. */
+/* ② MANE WISPS — three streaks flowing rightward, each at a
+   different size & speed.  Made FAT and BRIGHT so they're visible
+   against the dark navy. */
 table#about > tbody > tr.right > td:first-child::after {
     content: "" !important;
     position: absolute !important;
     top: 50% !important;
     left: 50% !important;
-    width: 240px !important;
-    height: 24px !important;
+    width: 360px !important;
+    height: 50px !important;
     background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(232, 192, 104, 0.85) 30%,
-        rgba(255, 220, 130, 0.95) 50%,
-        rgba(232, 192, 104, 0.75) 70%,
+        rgba(255, 215, 130, 0.85) 25%,
+        rgba(255, 230, 160, 0.95) 50%,
+        rgba(255, 215, 130, 0.85) 75%,
         transparent 100%
     ) !important;
     border-radius: 50% !important;
     transform: translate(-50%, -50%) !important;
-    animation: eg-mane-wisp 3.5s ease-in-out infinite !important;
+    animation: eg-mane-wisp 3s ease-in-out infinite !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+    filter: blur(4px) !important;
+    opacity: 0.90 !important;
+}
+
+/* ③ SECOND wisp — smaller, faster, slight vertical offset */
+table#about > tbody > tr.right::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 38% !important;
+    left: 30% !important;
+    width: 240px !important;
+    height: 26px !important;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(232, 192, 104, 0.85) 35%,
+        rgba(255, 215, 130, 0.95) 55%,
+        transparent 100%
+    ) !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    animation: eg-mane-wisp 2.4s ease-in-out infinite 0.5s !important;
     pointer-events: none !important;
     z-index: -1 !important;
     filter: blur(3px) !important;
     opacity: 0.85 !important;
 }
 
-/* ③ A SECOND wisp layer, smaller, offset, slightly faster.
-   We hang it off the parent table row so we still have two
-   pseudo-elements available on the cell. */
-table#about > tbody > tr.right::before {
+/* ④ THIRD wisp + sparkle ring — hangs off the table itself */
+table#about > tbody > tr.right::after {
     content: "" !important;
     position: absolute !important;
-    top: 50% !important;
-    left: 220px !important;       /* roughly behind/around the king image */
-    width: 160px !important;
-    height: 14px !important;
+    top: 62% !important;
+    left: 30% !important;
+    width: 200px !important;
+    height: 20px !important;
     background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(212, 160, 88, 0.70) 35%,
+        rgba(212, 160, 88, 0.75) 35%,
         rgba(232, 192, 104, 0.85) 55%,
         transparent 100%
     ) !important;
     border-radius: 50% !important;
     transform: translate(-50%, -50%) !important;
-    animation: eg-mane-wisp 2.8s ease-in-out infinite 0.6s !important;   /* delayed start */
+    animation: eg-mane-wisp 3.6s ease-in-out infinite 1.2s !important;
     pointer-events: none !important;
     z-index: -1 !important;
-    filter: blur(2px) !important;
+    filter: blur(3px) !important;
     opacity: 0.75 !important;
 }
-table#about > tbody > tr.right {
-    position: relative !important;        /* so the ::before can anchor */
+
+/* ⑤ SPARKLE CLOUD around the king — small golden pinpricks
+   that twinkle. Attached to the table#about itself. */
+table#about {
+    position: relative !important;
+}
+table#about::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 540px !important;
+    height: 360px !important;
+    transform: translate(-50%, -50%) !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+    background-image:
+        radial-gradient(circle 2px at 60px 30px,   rgba(255, 230, 160, 0.95), transparent 60%),
+        radial-gradient(circle 1.5px at 140px 80px, rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 2.2px at 240px 24px, rgba(255, 245, 200, 0.95), transparent 60%),
+        radial-gradient(circle 1.8px at 360px 60px, rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 2px at 480px 30px,  rgba(255, 230, 160, 0.95), transparent 60%),
+        radial-gradient(circle 1.4px at 80px 200px, rgba(255, 215, 130, 0.85), transparent 60%),
+        radial-gradient(circle 2.2px at 200px 260px, rgba(255, 245, 200, 0.95), transparent 60%),
+        radial-gradient(circle 1.8px at 360px 230px, rgba(232, 192, 104, 0.85), transparent 60%),
+        radial-gradient(circle 2px at 480px 260px, rgba(255, 230, 160, 0.95), transparent 60%);
+    background-repeat: no-repeat !important;
+    animation: eg-twinkle 4s ease-in-out infinite !important;
 }
 
 

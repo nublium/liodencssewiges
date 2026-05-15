@@ -16,28 +16,57 @@
        that's how the CSS finds your content.
     ✗ DO NOT remove the <link rel="stylesheet"> line at the top.
 
-  HOW TO CHANGE A TITLE
+  ─── COMMON THINGS YOU MIGHT WANT TO DO ─────────────────────
+
+  ✱ Change a title or a value
     → Find the matching tag (e.g. <div class="eg-title">…</div>)
       and replace the text between the > and < signs.
 
-  HOW TO ADD A NEW PARAGRAPH
+  ✱ Add a new paragraph
     → Wrap text in <p>…</p>. Add more paragraphs by repeating.
 
-  HOW TO ADD A PULL-QUOTE (a highlighted callout)
-    → <blockquote class="eg-pullquote">…</blockquote>
+  ✱ Add a pull-quote (highlighted callout)
+    → <div class="eg-pullquote">…</div>
 
-  HOW TO ADD A DIVIDER (gold horizontal line)
+  ✱ Add a divider INSIDE a box (gold line)
     → <hr class="eg-divider">
 
-  HOW TO MAKE THE FIRST LETTER OF A PARAGRAPH HUGE
+  ✱ Add a PAGE-LEVEL divider (between major sections)
+    → <div class="eg-page-divider"><span>✦</span></div>
+
+  ✱ Make the first letter of a paragraph huge (drop-cap)
     → <p class="eg-leadp">First letter…</p>
 
-  HOW TO ADD A SMALL TAG / PILL (e.g. for member ID)
+  ✱ Make the LAST paragraph stand out (closing flourish)
+    → <p class="eg-closing">…</p>
+
+  ✱ Add a small tag / pill (e.g. for member ID)
     → <span class="eg-tag">G1 MNGWA</span>
+
+  ✱ Add a gallery card with a SYMBOL (no real image yet)
+    → <div class="eg-gal-card">
+         <div class="eg-gal-img"><span>✦</span></div>
+         <span class="eg-gal-name">NAME</span>
+         <span class="eg-gal-desc">short descriptor</span>
+       </div>
+
+  ✱ Add a gallery card with a REAL IMAGE
+    → <div class="eg-gal-card">
+         <img class="eg-gal-img" src="https://yourhost/your-image.png" alt="…" />
+         <span class="eg-gal-name">NAME</span>
+         <span class="eg-gal-desc">short descriptor</span>
+       </div>
   ============================================================
 -->
 
 <link rel="stylesheet" type="text/css" href="https://nublium.github.io/liodencssewiges/ewiges-den.css" />
+
+
+<!-- Two shooting stars and a nebula glow — decorative, sit fixed
+     in the background. They don't affect layout in any way. -->
+<div class="eg-nebula"></div>
+<div class="eg-shooting-star"></div>
+<div class="eg-shooting-star two"></div>
 
 
 <!-- ────────────────────────────────────────────────────────────
@@ -47,13 +76,23 @@
 
 
     <!-- ════════════════════════════════════════════════════════
-         TITLE BLOCK
-         ════════════════════════════════════════════════════════
-         The three lines below are your page heading. Edit the text
-         freely, but keep each div's class so the styling applies. -->
+         TITLE BLOCK — surrounded by constellation ornaments
+         ════════════════════════════════════════════════════════ -->
+
+    <!-- Tiny ornament row above the title -->
+    <div class="eg-title-crown">✦ ✧ ✦ ✧ ✦</div>
+
+    <!-- Main title with star ornaments flanking it -->
     <div class="eg-title">Under the Starlit Sky&hellip;</div>
+
+    <!-- Italic subtitle with horizontal gold rule above -->
     <div class="eg-subtitle">&hellip;freedom rode the open wind.</div>
+
+    <!-- Caps tagline flanked by gold rules ending in stars -->
     <div class="eg-tagline">Devoted Soul &middot; Scattered &middot; Unbound</div>
+
+    <!-- Tiny constellation row beneath -->
+    <div class="eg-title-stars">✧ ✦ ✧</div>
 
 
     <!-- ════════════════════════════════════════════════════════
@@ -62,16 +101,14 @@
          This is the long-form storytelling area. Drop your lore
          here. Use <p> tags for paragraphs. The first paragraph
          already has the "eg-leadp" class so the first letter
-         renders as a gold drop-cap.
-
-         Optional ingredients you can sprinkle in:
-           · <hr class="eg-divider">        — gold horizontal rule
-           · <blockquote class="eg-pullquote">…</blockquote>  — quote
-           · <span class="eg-tag">…</span>  — small pill / tag
+         renders as a gold drop-cap. The LAST paragraph uses the
+         "eg-closing" class for a star-bracketed flourish.
     ════════════════════════════════════════════════════════ -->
     <div class="eg-box lore">
         <div class="eg-box-title">Pride's Lore</div>
+        <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
+        <!-- FIRST paragraph: drop-cap on the first letter -->
         <p class="eg-leadp">
             [Open with a single, striking line about your pride —
              a place, a feeling, a memory. The first letter will
@@ -85,11 +122,11 @@
              to roar beneath this sky?]
         </p>
 
-        <!-- A highlighted pull-quote — comment this out if you don't want it -->
-        <blockquote class="eg-pullquote">
-            [A line that captures the soul of your pride.
-             Could be a motto, a memory, or a vow.]
-        </blockquote>
+        <!-- A highlighted pull-quote — remove if you don't want it -->
+        <div class="eg-pullquote">
+            [A line that captures the soul of your pride. Could be a
+             motto, a memory, or a vow. Will render with quote marks.]
+        </div>
 
         <p>
             [Third paragraph: the present. What does daily life look
@@ -97,14 +134,21 @@
              quiet hours between the stars and the dawn.]
         </p>
 
-        <!-- A gold divider — remove if not needed -->
+        <!-- A small gold divider INSIDE the box — remove if unwanted -->
         <hr class="eg-divider">
 
-        <p>
+        <!-- LAST paragraph: closing flourish with stars above & below -->
+        <p class="eg-closing">
             [Closing paragraph: what comes next. Where is the pride
-             going? What do they still seek? End with the open wind.]
+             going? What do they still seek? End on the open wind.]
         </p>
     </div>
+
+
+    <!-- A page-level divider between the wide lore box and the
+         two-column row below. Remove if you want the row to sit
+         tighter to the lore. -->
+    <div class="eg-page-divider"><span>✦</span></div>
 
 
     <!-- ════════════════════════════════════════════════════════
@@ -116,15 +160,15 @@
         <!-- ────────────────────────────────────────────────────
              BOX 2 — PLAYER'S INFO  (small, on the left, ~35%)
              ────────────────────────────────────────────────────
-             A compact card about YOU (the player), not the
-             pride. Replace each [bracketed value] below.
+             Compact card about YOU (the player), not the pride.
+             Labels sit LEFT, values sit RIGHT.
              ──────────────────────────────────────────────────── -->
         <div class="eg-box player">
             <div class="eg-box-title">Player's Info</div>
+            <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
             <!-- Optional avatar — NOT a circle (per your preference).
-                 Replace the SVG link with your own image URL if you have one.
-                 To REMOVE the avatar entirely, delete the whole <div class="eg-avatar"> below. -->
+                 To REMOVE the avatar entirely, delete the whole <div class="eg-avatar">. -->
             <div class="eg-avatar">
                 <img src="https://nublium.github.io/liodencssewiges/placeholder-avatar.svg"
                      alt="Player avatar" />
@@ -132,55 +176,42 @@
 
             <!-- Each row is a label : value pair.
                  Duplicate <div class="eg-stat-row">…</div> to add more. -->
-
             <div class="eg-stat-row">
                 <span class="eg-stat-label">Call Me</span>
                 <span class="eg-stat-value">[Your name]</span>
             </div>
-
             <div class="eg-stat-row">
                 <span class="eg-stat-label">Pronouns</span>
                 <span class="eg-stat-value">[They / She / He / …]</span>
             </div>
-
             <div class="eg-stat-row">
                 <span class="eg-stat-label">Timezone</span>
                 <span class="eg-stat-value">[Your TZ]</span>
             </div>
-
             <div class="eg-stat-row">
                 <span class="eg-stat-label">Status</span>
                 <span class="eg-stat-value">[Open / Busy / Away]</span>
             </div>
 
-            <hr class="eg-divider">
-
-            <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">
-                Play Style
-            </div>
-            <p style="font-size:12px; line-height:1.6; margin:0;">
+            <!-- ─── Sub-section: Play Style ─── -->
+            <div class="eg-mini-title">Play Style</div>
+            <p class="eg-mini-body">
                 [Two or three short lines about how you play —
                  collector, breeder, RP-er, achievement hunter, etc.]
             </p>
 
-            <hr class="eg-divider">
-
-            <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">
-                Breeding Ethics
-            </div>
-            <p style="font-size:12px; line-height:1.6; margin:0;">
+            <!-- ─── Sub-section: Breeding Ethics ─── -->
+            <div class="eg-mini-title">Breeding Ethics</div>
+            <p class="eg-mini-body">
                 [Quick line on cubs / culling / trades / what you DO and DON'T do.]
             </p>
 
-            <hr class="eg-divider">
-
-            <div class="eg-box-title" style="font-size:12px; margin: 12px 0 10px 0;">
-                Links
-            </div>
-            <p style="font-size:12px; line-height:1.6; margin:0;">
-                <a href="#">[Wishlist]</a> &middot;
-                <a href="#">[Toyhouse]</a> &middot;
-                <a href="#">[Forum]</a>
+            <!-- ─── Sub-section: Links ─── -->
+            <div class="eg-mini-title">Links</div>
+            <p class="eg-mini-body">
+                <a href="#">Wishlist</a> &middot;
+                <a href="#">Toyhouse</a> &middot;
+                <a href="#">Forum</a>
             </p>
         </div>
 
@@ -188,40 +219,52 @@
         <!-- ────────────────────────────────────────────────────
              BOX 3 — GALLERY  (medium, on the right, ~65%)
              ────────────────────────────────────────────────────
-             Grid of art / character / photo cards. Each card has
-             an image and a caption. Duplicate one <div class="eg-gal-card">
-             block to add another card. Default grid is 2 columns;
-             cards wrap automatically to a new row.
+             Grid of art / character / photo cards. Each card now
+             uses a gradient + SYMBOL placeholder (no images needed).
+
+             To use a REAL image, replace the inner <div class="eg-gal-img">
+             with <img class="eg-gal-img" src="..." alt="..." />.
+
+             Symbols you might use:
+               ✦  six-point star
+               ✧  open six-point star
+               ☾  crescent moon
+               ⚜  fleur-de-lis
+               ❋  sparkle / snowflake
+               ❖  diamond
+               ⋆  small star
+               ☆ ★  classic stars
              ──────────────────────────────────────────────────── -->
         <div class="eg-box gallery">
             <div class="eg-box-title">Gallery</div>
+            <div class="eg-box-title-sub">✧ ✦ ✧</div>
 
             <div class="eg-gal-grid">
 
-                <!-- One card -->
+                <!-- Card 1 — symbol placeholder -->
                 <div class="eg-gal-card">
-                    <img src="https://nublium.github.io/liodencssewiges/placeholder-card-1.svg"
-                         alt="Gallery 1" />
-                    <span class="eg-gal-caption">[Title 1]</span>
+                    <div class="eg-gal-img"><span>✦</span></div>
+                    <span class="eg-gal-name">[Title 1]</span>
+                    <span class="eg-gal-desc">[short descriptor]</span>
                 </div>
 
-                <!-- Another card — copy/paste this block to add more -->
+                <!-- Card 2 — copy/paste this block to add more cards -->
                 <div class="eg-gal-card">
-                    <img src="https://nublium.github.io/liodencssewiges/placeholder-card-2.svg"
-                         alt="Gallery 2" />
-                    <span class="eg-gal-caption">[Title 2]</span>
-                </div>
-
-                <div class="eg-gal-card">
-                    <img src="https://nublium.github.io/liodencssewiges/placeholder-card-3.svg"
-                         alt="Gallery 3" />
-                    <span class="eg-gal-caption">[Title 3]</span>
+                    <div class="eg-gal-img"><span>☾</span></div>
+                    <span class="eg-gal-name">[Title 2]</span>
+                    <span class="eg-gal-desc">[short descriptor]</span>
                 </div>
 
                 <div class="eg-gal-card">
-                    <img src="https://nublium.github.io/liodencssewiges/placeholder-card-4.svg"
-                         alt="Gallery 4" />
-                    <span class="eg-gal-caption">[Title 4]</span>
+                    <div class="eg-gal-img"><span>⚜</span></div>
+                    <span class="eg-gal-name">[Title 3]</span>
+                    <span class="eg-gal-desc">[short descriptor]</span>
+                </div>
+
+                <div class="eg-gal-card">
+                    <div class="eg-gal-img"><span>❋</span></div>
+                    <span class="eg-gal-name">[Title 4]</span>
+                    <span class="eg-gal-desc">[short descriptor]</span>
                 </div>
 
             </div>
@@ -231,14 +274,11 @@
 
 
     <!-- ════════════════════════════════════════════════════════
-         CREDIT — tiny line at the very bottom.
+         CREDIT — small line at the very bottom.
          Required by the designer's terms; please don't remove.
          ════════════════════════════════════════════════════════ -->
-    <div style="text-align:center; margin-top:32px; font-family:'Cinzel', serif;
-                font-size:9px; letter-spacing:3px; color: rgba(212, 160, 88, 0.45);
-                text-transform: uppercase;">
-        &middot; den by <a href="https://www.lioden.com/profile.php?id=166079"
-                style="color: rgba(232, 192, 104, 0.70); text-decoration: none;">nub #166079</a> &middot;
+    <div class="eg-credit">
+        den by <a href="https://www.lioden.com/profile.php?id=166079">nub &middot; #166079</a>
     </div>
 
 </div><!-- /.eg-territory -->

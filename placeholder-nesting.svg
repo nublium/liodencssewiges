@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- UNDER THE STARLIT SKY · nesting-grounds banner — sleeping cubs under stars -->
+<!-- UNDER THE STARLIT SKY · nesting-grounds banner
+     LANDSCAPE ONLY · soft valley between hills, no animals -->
 <svg xmlns="http://www.w3.org/2000/svg" width="260" height="170" viewBox="0 0 260 170" preserveAspectRatio="xMidYMid slice">
 
     <defs>
@@ -13,10 +14,10 @@
             <stop offset="60%" stop-color="#d4a058"/>
             <stop offset="100%" stop-color="#e8c068"/>
         </linearGradient>
-        <radialGradient id="nsNest" cx="50%" cy="78%" r="40%">
-            <stop offset="0%"   stop-color="#ffd680" stop-opacity="0.40"/>
-            <stop offset="60%"  stop-color="#d4a058" stop-opacity="0.18"/>
-            <stop offset="100%" stop-color="#a87838" stop-opacity="0"/>
+        <radialGradient id="nsValley" cx="50%" cy="82%" r="42%">
+            <stop offset="0%"   stop-color="#ffd680" stop-opacity="0.50"/>
+            <stop offset="60%"  stop-color="#a87838" stop-opacity="0.20"/>
+            <stop offset="100%" stop-color="#1a2535" stop-opacity="0"/>
         </radialGradient>
     </defs>
 
@@ -27,47 +28,50 @@
 
     <!-- Stars -->
     <g fill="#f0e8d0">
-        <circle cx="22"  cy="20" r="1.2" opacity="0.92"/>
-        <circle cx="58"  cy="32" r="0.9" opacity="0.78"/>
-        <circle cx="98"  cy="16" r="1.4" opacity="0.95"/>
-        <circle cx="138" cy="30" r="0.9" opacity="0.80"/>
-        <circle cx="178" cy="16" r="1.2" opacity="0.90"/>
-        <circle cx="218" cy="32" r="0.9" opacity="0.78"/>
-        <circle cx="32"  cy="54" r="0.7" opacity="0.65"/>
-        <circle cx="208" cy="50" r="0.8" opacity="0.72"/>
+        <circle cx="14"  cy="14" r="1.0" opacity="0.85"/>
+        <circle cx="40"  cy="28" r="1.2" opacity="0.92"/>
+        <circle cx="66"  cy="12" r="0.9" opacity="0.78"/>
+        <circle cx="92"  cy="26" r="1.0" opacity="0.85"/>
+        <circle cx="118" cy="14" r="1.3" opacity="0.92"/>
+        <circle cx="144" cy="26" r="0.7" opacity="0.70"/>
+        <circle cx="172" cy="14" r="1.1" opacity="0.88"/>
+        <circle cx="196" cy="28" r="0.9" opacity="0.80"/>
+        <circle cx="222" cy="14" r="1.3" opacity="0.92"/>
+        <circle cx="248" cy="26" r="0.7" opacity="0.70"/>
+        <circle cx="22"  cy="50" r="0.7" opacity="0.65"/>
+        <circle cx="74"  cy="56" r="0.9" opacity="0.78"/>
+        <circle cx="180" cy="52" r="0.8" opacity="0.72"/>
+        <circle cx="232" cy="58" r="0.7" opacity="0.65"/>
     </g>
 
     <!-- Distant horizon -->
-    <path d="M 0 110 Q 80 100, 130 108 Q 200 100, 260 108 L 260 135 L 0 135 Z"
+    <path d="M 0 95 L 40 78 L 80 90 L 130 70 L 180 88 L 220 76 L 260 86 L 260 105 L 0 105 Z"
           fill="#0c1f33" opacity="0.92"/>
 
-    <!-- Glow around the nest -->
-    <ellipse cx="130" cy="138" rx="100" ry="24" fill="url(#nsNest)"/>
+    <!-- Twin sheltering hills on either side, valley in the middle -->
+    <path d="M 0 168 Q 30 110, 80 100 Q 100 100, 110 115 L 110 168 Z"
+          fill="#1a2535" opacity="0.95"/>
+    <path d="M 260 168 Q 230 110, 180 100 Q 160 100, 150 115 L 150 168 Z"
+          fill="#1a2535" opacity="0.95"/>
 
-    <!-- The nest — a soft curved cradle -->
-    <path d="M 70 145 Q 130 125, 190 145" stroke="#a87838" stroke-width="3"
-          fill="none" opacity="0.85"/>
-    <path d="M 76 150 Q 130 132, 184 150" stroke="#8c6428" stroke-width="2"
-          fill="none" opacity="0.65"/>
+    <!-- The warm-glow valley between them -->
+    <ellipse cx="130" cy="142" rx="60" ry="22" fill="url(#nsValley)"/>
 
-    <!-- Cubs / eggs as soft glowing orbs -->
-    <g>
-        <ellipse cx="100" cy="142" rx="9" ry="7" fill="#3a2818" opacity="0.85"/>
-        <ellipse cx="100" cy="140" rx="5" ry="3" fill="#ffd680" opacity="0.55"/>
+    <!-- Soft mid-ground line -->
+    <path d="M 100 138 Q 130 130, 160 138" stroke="#a87838"
+          stroke-width="1.5" fill="none" opacity="0.55"/>
+    <path d="M 105 144 Q 130 138, 155 144" stroke="#8c6428"
+          stroke-width="1" fill="none" opacity="0.40"/>
 
-        <ellipse cx="130" cy="138" rx="10" ry="8" fill="#3a2818" opacity="0.90"/>
-        <ellipse cx="130" cy="135" rx="6" ry="3.5" fill="#ffd680" opacity="0.60"/>
-
-        <ellipse cx="160" cy="142" rx="9" ry="7" fill="#3a2818" opacity="0.85"/>
-        <ellipse cx="160" cy="140" rx="5" ry="3" fill="#ffd680" opacity="0.55"/>
-    </g>
-
-    <!-- Tiny floating sparks -->
+    <!-- Floating sparks above the valley -->
     <g fill="#ffd680">
-        <circle cx="84"  cy="108" r="1" opacity="0.85"/>
-        <circle cx="116" cy="100" r="1.2" opacity="0.90"/>
-        <circle cx="148" cy="106" r="1" opacity="0.85"/>
-        <circle cx="180" cy="100" r="1.2" opacity="0.90"/>
+        <circle cx="90"  cy="100" r="1.1" opacity="0.88"/>
+        <circle cx="118" cy="92"  r="1.4" opacity="0.95"/>
+        <circle cx="146" cy="96"  r="1.2" opacity="0.90"/>
+        <circle cx="172" cy="100" r="1.0" opacity="0.85"/>
+        <circle cx="110" cy="116" r="1.2" opacity="0.90"/>
+        <circle cx="150" cy="118" r="1.0" opacity="0.85"/>
+        <circle cx="130" cy="124" r="1.3" opacity="0.92"/>
     </g>
 
     <!-- Foreground -->
